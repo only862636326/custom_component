@@ -23,13 +23,8 @@
 
 #include <stdio.h>
 
-#if 0
-#include <Arduino.h>
-#include "component_uni_io.h"
-#define COMP_PRINTF debug_drv.printf
-#else
+// 使用标准printf而不是debug_drv.printf
 #define COMP_PRINTF printf
-#endif
 
 #define get_sys_time()
 #define COMP_LOG_LEVEL COMP_LOG_LEVEL_DEBUG

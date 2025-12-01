@@ -17,8 +17,7 @@ extern "C"
 // IO驱动最大数量
 #define MAX_IO_DRV_NUM 10
 
-// 驱动ID宏定义
-#define DRV_ID_DEBUG 1
+
 
 #define IO_ERR_NONE 0          // 无错误
 #define IO_ERR_INVALID_ID 1    // 无效的驱动ID
@@ -37,25 +36,12 @@ extern "C"
         char *dat;    // 数据指针
     } Type_UniIO_PInfo_t, *pType_UniIO_PInfo_t;
 
-    // 多功能打印结构体
-    typedef struct Type_mutfun_print
-    {
-        void (*printInt)(int32_t);    // 打印整数
-        void (*printS)(const char *); // 打印字符串
-        void (*printF)(float);        // 打印浮点数
-        void (*printHex)(int32_t);    // 打印十六进制数
-        void (*putChar)(char);        // 打印单个字符
-
-        void (*println)();                   // 打印换行
-        int (*printf)(const char *fmt, ...); // 格式化打印
-        void *dev;                           // 设备指针
-    } Type_mutfun_print, *pType_mutfun_print;
-
     // IO驱动结构体
     typedef struct Type_COMP_uni_io_t
     {
         int32_t id; // 驱动ID
         int32_t lock;
+        char name[16]; // 驱动名称
         
         // 打开和关闭函数
         int32_t (*open)(void *);
@@ -76,7 +62,6 @@ extern "C"
         // 调试打印函数
         int (*printf)(const char *fmt, ...);
         int (*vprintf)(const char *fmt, va_list arg);
-        pType_mutfun_print debug; // 调试打印实例
     } Type_COMP_uni_io_t, *pType_COMP_uni_io_t;
 
     // 驱动注册函数
@@ -84,10 +69,9 @@ extern "C"
 
     // 驱动获取函数
     pType_COMP_uni_io_t UniIO_Drv_Get(int id);
+    pType_COMP_uni_io_t UniIO_Drv_Open(const char *name);
 
     // 全局变量
-    extern Type_COMP_uni_io_t debug_drv;   // 调试驱动实例
-    extern Type_mutfun_print mulfun_print; // 多功能打印实例
 
 #ifdef __cplusplus
 } // extern "C"

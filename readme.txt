@@ -9,3 +9,12 @@
 - 更新了UniIO_Drv_Register函数，移除了DRV_ID_DEBUG的特殊处理
 - 修复了UniIO_Drv_Get和UniIO_Drv_Open函数中的逻辑错误
 - 更新了日志系统以适应debug_drv的删除
+
+2025/12/02 uni_io
+- 调整了read、write、read_async、write_async、read_call、write_call等函数的参数顺序，将dat和len的位置进行了交换
+- 更新了Type_UniIO_PInfo_t结构体中dat和len的顺序
+- 更新了null_fun函数的参数顺序
+- 将uni_io中len和timeout参数的数据类型从int32_t改为uint32_t
+- 将dat参数的数据类型从char*改为uint8_t*
+- 填加uni_io快速定义 
+- 注册时带返回值

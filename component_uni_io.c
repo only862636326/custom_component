@@ -25,16 +25,16 @@
 #include <string.h>
 #if CUST_COMP_UNI_IO
 
-static int32_t null_fun(uint32_t a, int32_t b, char *c) {return 0;}
+static int32_t null_fun(uint32_t a, uint8_t *b, uint32_t c, uint32_t d) {return 0;}
 
 pType_COMP_uni_io_t s_drv_list[MAX_IO_DRV_NUM] = {NULL};
-void UniIO_Drv_Register(pType_COMP_uni_io_t p_drv)
+uint32_t UniIO_Drv_Register(pType_COMP_uni_io_t p_drv)
 {
     int i;
     // 检查输入参数
     if (p_drv == NULL)
     {
-        return;
+        return IO_ERR_INVALID_ID;
     }    
 
     for (i = 0; i < MAX_IO_DRV_NUM; i++)
@@ -43,7 +43,7 @@ void UniIO_Drv_Register(pType_COMP_uni_io_t p_drv)
         if (strcmp(s_drv_list[i]->name, p_drv->name) == 0)
         {
             // 如果有重复的名称，直接返回
-            return;
+            return IO_ERR_INVALID_ID;
         }
     }
 
@@ -53,7 +53,7 @@ void UniIO_Drv_Register(pType_COMP_uni_io_t p_drv)
         if (s_drv_list[i] == NULL)
         {
             s_drv_list[i] = p_drv;
-            return;
+            return IO_ERR_NONE;
         }
     }    
 }
@@ -104,7 +104,25 @@ pType_COMP_uni_io_t UniIO_Drv_Open(const char *name)
 #if 0
 
 
+static int drv_read(uint32_t addr, uint8_t *dat, uint32_t len, uint32_t timeout)
+{
+    pins_channel_type_t val = PINS_DRV_ReadPins((GPIO_Type*) addr);
+    val >>= len;
+    return val & 0x01;
+}
 
+static int drv_write(uint32_t addr, uint8_t *dat, uint32_t len, uint32_t timeout)
+{
+    PINS_DRV_WritePin((GPIO_Type*) addr, len, (int) dat);
+    return 0;
+}
+static int drv_init(void *p)
+{    
+    return 0;    
+}
+
+
+UNI_IO_DEFINE_DRV(drv_gpio, 13);
 
 #endif
 

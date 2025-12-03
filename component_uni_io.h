@@ -17,7 +17,8 @@ extern "C"
 // IO驱动最大数量
 #define MAX_IO_DRV_NUM 10
 
-
+#define STRINGIFY(x) STRINGIFY_HELPER(x)  // 外层：触发参数展开
+#define STRINGIFY_HELPER(x) #x            // 内层：实际字符串化
 
 #define IO_ERR_NONE 0          // 无错误
 #define IO_ERR_INVALID_ID 1    // 无效的驱动ID
@@ -28,12 +29,22 @@ extern "C"
 #define IO_ERR_ASYNC_FAILED 6  // 异步操作失败
 #define IO_ERR_CALLBACK_NULL 7 // 回调函数为空
 
+    // 2. 外层宏：批量定义驱动结构体
+    #define UNI_IO_DEFINE_DRV(DRV_NAME, DRV_ID) \
+    Type_COMP_uni_io_t DRV_NAME = { \
+        .id = DRV_ID, \
+        .name = STRINGIFY(DRV_NAME), \
+        .open = drv_init, \
+        .write = drv_write, \
+        .read = drv_read, \
+    }
+
     // IO参数结构体
     typedef struct Type_UniIO_PInfo_t
     {
-        uint32_t addr; // 地址
-        int32_t len;  // 数据长度
-        char *dat;    // 数据指针
+        uint32_t addr;  // 地址
+        uint8_t *dat;   // 数据指针
+        uint32_t len;   // 数据长度
     } Type_UniIO_PInfo_t, *pType_UniIO_PInfo_t;
 
     // IO驱动结构体
@@ -48,16 +59,16 @@ extern "C"
         int32_t (*close)(void *);
 
         // 同步读写函数
-        int32_t (*read)(uint32_t addr, int32_t len, char *dat);
-        int32_t (*write)(uint32_t addr, int32_t len, char *dat); // static int32_t uio_write(uint32_t addr, int32_t len, char *dat){  ;}
+        int32_t (*read)(uint32_t addr, uint8_t *dat, uint32_t len, uint32_t timeout);
+        int32_t (*write)(uint32_t addr, uint8_t *dat, uint32_t len, uint32_t timeout);
 
         // 异步读写函数
-        int32_t (*read_async)(uint32_t addr, int32_t len, char *dat);
-        int32_t (*write_async)(uint32_t addr, int32_t len, char *dat);
+        int32_t (*read_async)(uint32_t addr, uint8_t *dat, uint32_t len);
+        int32_t (*write_async)(uint32_t addr, uint8_t *dat, uint32_t len);
 
         // 回调读写函数
-        int32_t (*read_call)(uint32_t addr, int32_t len, char *dat);
-        int32_t (*write_call)(uint32_t addr, int32_t len, char *dat);
+        int32_t (*read_call)(uint32_t addr, uint8_t *dat, uint32_t len);
+        int32_t (*write_call)(uint32_t addr, uint8_t *dat, uint32_t len);
 
         // 调试打印函数
         int (*printf)(const char *fmt, ...);
@@ -65,7 +76,7 @@ extern "C"
     } Type_COMP_uni_io_t, *pType_COMP_uni_io_t;
 
     // 驱动注册函数
-    void UniIO_Drv_Register(pType_COMP_uni_io_t p_drv);
+    uint32_t UniIO_Drv_Register(pType_COMP_uni_io_t p_drv);
 
     // 驱动获取函数
     pType_COMP_uni_io_t UniIO_Drv_Get(int id);

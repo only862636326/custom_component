@@ -29,6 +29,8 @@
  *     24/11/27 v1.1.0 添加注册时自带回调函数的函数
  *     24/11/27 v1.2.0 添加异步事件功能
  *
+ *     25/11/20 v1.3.0 添加可通过idx快速触发事件
+ *
  ***************************************************************************************************
  **/
 
@@ -121,6 +123,42 @@ void HopeEvtSubsribeAsync(int32_t id, void (*call)(void *), void (*finish_call)(
         {
             COMP_LOG_WARN("HopeEvtSubsribe call exsit: %d", id);
             break;
+        }
+    }
+}
+
+// 获取事件idx 
+int32_t HopeEvtGetIdx(int id)
+{
+    int i = 0;
+    for(i = 0; i < COMP_EVT_MAX_NUM; i++)
+    {
+        if(evt_list[i].event_id == id)
+        {
+            return i;
+        }
+    }
+    return -1;
+}
+
+void HopeEvtTirggerFast(int32_t idx, void *var)
+{
+    pType_hope_evt_t p = &evt_list[idx];
+    int i = 0;
+    if (p == NULL)
+    {
+        COMP_LOG_WARN("HopeEvtTirggerFast evt empty : %d", idx);
+        return;
+    }
+    for(i = 0; i < COMP_EVT_MAX_CALL; i++)
+    {
+        if (p->call[i] == NULL) // call is not null
+        {
+            break;
+        }
+        else
+        {
+            p->call[i](var);
         }
     }
 }

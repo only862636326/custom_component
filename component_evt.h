@@ -7,9 +7,11 @@
 
 #if CUST_COMP_EVT
 
-#define EVT_BLE_REV_MSG 1
 #define EVT_UDP_REV_MSG 2
 #define EVT_U2__REV_MSG 3
+
+#define EVT_UART0_TX_DONE 4
+#define EVT_UART0_RX_DONE 5
 
 #define COMP_EVT_MAX_NUM 10
 #define COMP_EVT_MAX_CALL 5
@@ -47,11 +49,14 @@ extern "C"
 
     extern void HopeEvtRegsterNoCall(int32_t id);
     extern void HopeEvtTirgger(int32_t id, void *p);
-
+    extern void HopeEvtTirggerFast(int32_t idx, void *p);
+    int32_t HopeEvtGetIdx(int id);
+    
 #if COMP_EVT_Async
     extern void HopeEvtTask(void *p);
     extern void HopeEvtTirggerAsync(int32_t id, void *p);
 #endif
+
 
     extern void HopeEvtSubsribe(int32_t id, void (*call)(void *));
     extern void HopeEvtRegsterCall(int32_t id, void (*call)(void *));

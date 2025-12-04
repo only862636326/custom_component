@@ -2,10 +2,10 @@
 #define __COMPONENT_INCLUDE_H__
 
 #define CUST_COMP_CMD 0
-#define CUST_COMP_EVT 1
+#define CUST_COMP_EVT 0
 #define CUST_COMP_LOG 0
 #define CUST_COMP_FSM 0
-#define CUST_COMP_UNI_IO 0
+#define CUST_COMP_UNI_IO 1
 
 #include "component_log.h"
 #include "component_evt.h"

@@ -11,7 +11,9 @@
  ***************************************************************************************************
  *
  *
- *
+ * v2025/12/01
+ *      1. uni_io中删除 debug功能
+ *      2. 添加 dev name 功能, 注册时仅判断name, 不判断id，可通过name打开驱动
  *
  *
  ***************************************************************************************************
@@ -20,85 +22,50 @@
 #include <stdio.h>
 #include <stdarg.h>
 #include "component_uni_io.h"
+#include <string.h>
 #if CUST_COMP_UNI_IO
-#define MAX_IO_DRV_NUM 10
 
-static int32_t null_fun(uint32_t a, int32_t b, char *c) {return 0;}
-
-static void printInt(int32_t p);
-static void printS(const char *p);
-static void printF(float p);
-static void printHex(int32_t p);
-static void putChar(char p);
-static void println();
-static int cust_printf(const char *fmt, ...);
-
-Type_mutfun_print mulfun_print =
-    {
-        .printInt = printInt,
-        .printS = printS,
-        .printF = printF,
-        .printHex = printHex,
-        .putChar = putChar,
-        .println = println,
-        .printf = cust_printf,
-};
-
-Type_COMP_uni_io_t debug_drv =
-    {
-        .id = -1,
-        .write = null_fun,
-        .read = null_fun,
-
-        .write_async = null_fun,
-        .read_async = null_fun,
-
-        .read_call = null_fun,
-        .write_call = null_fun,
-
-        .printf = printf,
-        .vprintf = vprintf,
-        .debug = &mulfun_print,
-};
+static int32_t null_fun(uint32_t a, uint8_t *b, uint32_t c, uint32_t d) {return 0;}
 
 pType_COMP_uni_io_t s_drv_list[MAX_IO_DRV_NUM] = {NULL};
-void UniIO_Drv_Register(pType_COMP_uni_io_t p_drv)
+uint32_t UniIO_Drv_Register(pType_COMP_uni_io_t p_drv)
+{
+    int i;
+    // 检查输入参数
+    if (p_drv == NULL)
+    {
+        return IO_ERR_INVALID_ID;
+    }    
+
+    for (i = 0; i < MAX_IO_DRV_NUM; i++)
+    {
+        // 名称匹配
+        if (strcmp(s_drv_list[i]->name, p_drv->name) == 0)
+        {
+            // 如果有重复的名称，直接返回
+            return IO_ERR_INVALID_ID;
+        }
+    }
+
+    for (i = 0; i < MAX_IO_DRV_NUM; i++)
+    {
+        // 找到第一个空位置
+        if (s_drv_list[i] == NULL)
+        {
+            s_drv_list[i] = p_drv;
+            return IO_ERR_NONE;
+        }
+    }    
+}
+
+pType_COMP_uni_io_t UniIO_Drv_Get(int id)
 {
     int i;
     for (i = 0; i < MAX_IO_DRV_NUM; i++)
     {
         if (s_drv_list[i] == NULL)
         {
-            s_drv_list[i] = p_drv;
-            if (p_drv->id == DRV_ID_DEBUG)
-            {
-                debug_drv.id = p_drv->id;
-                debug_drv.printf = p_drv->printf;
-            }
-            // p_drv->debug = &mulfun_print;
-            return;
-        }
-        else if (s_drv_list[i]->id == p_drv->id)
-        {
-            debug_drv.printf("p_drv id exist");
-            return;
-        }
-    }
-}
-
-pType_COMP_uni_io_t UniIO_Drv_Get(int id)
-{
-    int i;
-    if (s_drv_list[i] == NULL || s_drv_list[i]->id == 0)
-    {
-        return NULL;
-    }
-
-    for (i = 0; i < MAX_IO_DRV_NUM; i++)
-    {
-        if (s_drv_list[i]->id == 0)
-        {
-            return NULL;
+            continue;
         }
         if (s_drv_list[i]->id == id)
         {
@@ -108,27 +75,54 @@ pType_COMP_uni_io_t UniIO_Drv_Get(int id)
     return NULL;
 }
 
-void printInt(int32_t p) { debug_drv.printf("%d ", p); }
-void printS(const char *p) { debug_drv.printf("%s ", p); }
-void printF(float p) { debug_drv.printf("%f ", p); }
-void printHex(int32_t p) { debug_drv.printf("0x%X ", p); }
-void putChar(char p) { debug_drv.printf("%c ", p); }
-void println() { debug_drv.printf("\r\n"); }
-
-int cust_printf(const char *fmt, ...)
+pType_COMP_uni_io_t UniIO_Drv_Open(const char *name)
 {
-    va_list args;
-    va_start(args, fmt);
-    int ret = debug_drv.vprintf(fmt, args); // 使用 vprintf 代替 printf
-    va_end(args);
-    return ret;
+    int i;
+
+    // 检查输入参数
+    if (name == NULL)
+    {
+        return NULL;
+    }
+
+    for (i = 0; i < MAX_IO_DRV_NUM; i++)
+    {
+        if (s_drv_list[i] == NULL)
+        {
+            continue;
+        }
+        if (strcmp(s_drv_list[i]->name, name) == 0)
+        {
+            return s_drv_list[i];
+        }
+    }
+    return NULL;
 }
+
 
 
 #if 0
 
 
+static int drv_read(uint32_t addr, uint8_t *dat, uint32_t len, uint32_t timeout)
+{
+    pins_channel_type_t val = PINS_DRV_ReadPins((GPIO_Type*) addr);
+    val >>= len;
+    return val & 0x01;
+}
 
+static int drv_write(uint32_t addr, uint8_t *dat, uint32_t len, uint32_t timeout)
+{
+    PINS_DRV_WritePin((GPIO_Type*) addr, len, (int) dat);
+    return 0;
+}
+static int drv_init(void *p)
+{    
+    return 0;    
+}
+
+
+UNI_IO_DEFINE_DRV(drv_gpio, 13);
 
 #endif
 

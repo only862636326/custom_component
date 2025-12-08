@@ -2,6 +2,11 @@
 #include <stdio.h>
 #include <stdint.h>
 #include "component_include.h"
+#include "component_log.h"
+#include "component_evt.h"
+#include "hope_component_fsm.h"
+#include "component_uni_io.h"
+#include "component_cmd.h"
 
 #ifndef __COMP_FW__
 #define __COMP_FW__
@@ -14,7 +19,7 @@ typedef struct Type_Comp_FW
 #if CUST_COMP_UNI_IO
     pType_COMP_uni_io_t (*UniIO_Drv_Get)(int id);
     pType_COMP_uni_io_t (*UniIO_Drv_Open)(const char *name);
-    void (*UniIO_Drv_Register)(pType_COMP_uni_io_t p_drv);
+    uint32_t (*UniIO_Drv_Register)(pType_COMP_uni_io_t p_drv);
 #endif
 
 #if CUST_COMP_EVT

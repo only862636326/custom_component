@@ -2,12 +2,12 @@
  ***************************************************************************************************
  * @file        component_evt.c
  * @author      wsn
- * @version     V1.0
+ * @version     v0.0.0
  * @date        2024.11.22
  * @brief       使用C实现的简易事件管理
  *              fsm functon
  *
- * @license     wsn
+ * @license     MIT
  ***************************************************************************************************
  * @attention
  *  使用数数组，
@@ -52,7 +52,8 @@ int evt_circle__end = 0;
 /// @param id
 void HopeEvtRegsterNoCall(int32_t id)
 {
-    int i = 0;
+    int i;
+    i = 0;
     if (id != 0)
     {
         for (i = 0; i < COMP_EVT_MAX_NUM; i++)
@@ -130,7 +131,8 @@ void HopeEvtSubsribeAsync(int32_t id, void (*call)(void *), void (*finish_call)(
 // 获取事件idx 
 int32_t HopeEvtGetIdx(int id)
 {
-    int i = 0;
+    int i;
+    i = 0;
     for(i = 0; i < COMP_EVT_MAX_NUM; i++)
     {
         if(evt_list[i].event_id == id)
@@ -144,7 +146,8 @@ int32_t HopeEvtGetIdx(int id)
 void HopeEvtTirggerFast(int32_t idx, void *var)
 {
     pType_hope_evt_t p = &evt_list[idx];
-    int i = 0;
+    int i;
+    i = 0;
     if (p == NULL)
     {
         COMP_LOG_WARN("HopeEvtTirggerFast evt empty : %d", idx);
@@ -235,7 +238,8 @@ void HopeEvtRegsterAsync(int32_t id, void (*call)(void *), void (*finish_call)(v
 /// @param p
 void HopeEvtTirggerAsync(int32_t id, void *p)
 {
-    int x = (evt_circle_head + 1) % COMP_EVT_MAX_BUF;
+    int x;
+    x = (evt_circle_head + 1) % COMP_EVT_MAX_BUF;
     // printf("%d %d\n", x, evt_circle_head);
     if (x == evt_circle_head)
     {

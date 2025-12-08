@@ -13,6 +13,7 @@
 
 typedef struct Type_hope_cmd_t
 {
+    char* name;
     int32_t id;
     int (*call)(void *);
 } Type_hope_cmd_t, *pType_hope_cmd_t;
@@ -23,10 +24,12 @@ extern "C"
 #endif
 
     extern int HopeCMDSend(int32_t id, void *p);
-    extern void HopeCMDRigster(int32_t id, void *p);
+    extern int HopeCMDSendIdx(int32_t idx, void *p);
 
+    extern void HopeCMDRigster(int32_t id, void *p);
     extern void HopeEvtSubsribe(int32_t id, void (*call)(void *));
     extern void HopeEvtRegsterCall(int32_t id, void (*call)(void *));
+
 
 #ifdef __cplusplus
 } // extern c

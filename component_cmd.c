@@ -2,7 +2,7 @@
  ***************************************************************************************************
  * @file        component_evt.c
  * @author      wsn
- * @version     V1.0
+ * @version     v0.0.0
  * @date        2024.11.27
  * @brief       使用C实现的简易命令管理
  *
@@ -70,6 +70,22 @@ int HopeCMDSend(int32_t id, void *p)
     }
     COMP_LOG_WARN("HoepCMDSend CMD empty : %d", id);
     return 0;
+}
+
+int HopeCMDSendIdx(int32_t idx, void *p)
+{
+    if (idx < 0 || idx >= COMP_CMD_MAX_NUM)
+    {
+        COMP_LOG_ERROR("HopeCMDSendIdx idx error: %d", idx);
+        return 0;
+    }
+    
+    if (cmd_list[idx].id == 0)
+    {
+        COMP_LOG_WARN("HoepCMDSendIdx CMD empty idx: %d", idx);
+        return 0;
+    }
+    return cmd_list[idx].call(p);
 }
 
 #endif

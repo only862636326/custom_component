@@ -5,10 +5,6 @@
 
 Type_Comp_FW TOP_FW = {
 
-#if CUST_COMP_LOG
-    .mulfun_print = &mulfun_print,
-#endif
-
 #if CUST_COMP_UNI_IO
     .UniIO_Drv_Get = UniIO_Drv_Get,
     .UniIO_Drv_Open = UniIO_Drv_Open,

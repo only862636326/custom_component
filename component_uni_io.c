@@ -2,8 +2,6 @@
  ***************************************************************************************************
  * @file        component_uni_io.c
  * @author      wsn
- * @version     V1.0
- * @date        2024.11.22
  * @brief       使用 统一读写接口
  *              fsm functon
  *
@@ -56,6 +54,7 @@ uint32_t UniIO_Drv_Register(pType_COMP_uni_io_t p_drv)
             return IO_ERR_NONE;
         }
     }    
+    return IO_ERR_INVALID_ID;
 }
 
 pType_COMP_uni_io_t UniIO_Drv_Get(int id)

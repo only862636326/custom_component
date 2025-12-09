@@ -12,7 +12,6 @@
 // IO驱动最大数量
 #define MAX_IO_DRV_NUM 10
 
-
 #define IO_ERR_NONE 0		   // 无错误
 #define IO_ERR_INVALID_ID 1	   // 无效的驱动ID
 #define IO_ERR_OPEN_FAILED 2   // 打开失败
@@ -40,8 +39,7 @@
 		.close = CLOSE,                                                   \
 		.write = WRITE,                                                   \
 		.read = READ,                                                     \
-}
-
+	}
 
 // IO参数结构体
 typedef struct Type_UniIO_PInfo_t
@@ -61,7 +59,7 @@ typedef struct Type_COMP_uni_io_t
 	// 打开和关闭函数
 	int32_t (*open)(void *);
 	int32_t (*close)(void *);
-
+	int32_t (*init)(void *);
 	// 同步读写函数
 	int32_t (*read)(uint32_t addr, uint8_t *dat, uint32_t len, uint32_t timeout);
 	int32_t (*write)(uint32_t addr, uint8_t *dat, uint32_t len, uint32_t timeout);
@@ -89,8 +87,7 @@ extern "C"
 
 	// 驱动获取函数
 	pType_COMP_uni_io_t UniIO_Drv_Get(int id);
-	pType_COMP_uni_io_t UniIO_Drv_Open(const char *name);
-
+	pType_COMP_uni_io_t UniIO_Drv_GetByName(const char *name);
 	// 全局变量
 
 #ifdef __cplusplus
@@ -100,3 +97,8 @@ extern "C"
 #endif
 
 #endif // __COMPONET_UNIIO_H__
+
+
+
+
+

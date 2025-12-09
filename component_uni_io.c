@@ -12,8 +12,9 @@
  * v2025/12/01
  *      1. uni_io中删除 debug功能
  *      2. 添加 dev name 功能, 注册时仅判断name, 不判断id，可通过name打开驱动
- *
- *
+*2025/12/09 uni_io
+- 改为UniIO_Drv_OPEN 改为UniIO_Drv_GetByName， 更符合实际
+*
  ***************************************************************************************************
  **/
 
@@ -23,7 +24,6 @@
 #include <string.h>
 #if CUST_COMP_UNI_IO
 
-static int32_t null_fun(uint32_t a, uint8_t *b, uint32_t c, uint32_t d) {return 0;}
 
 pType_COMP_uni_io_t s_drv_list[MAX_IO_DRV_NUM] = {NULL};
 uint32_t UniIO_Drv_Register(pType_COMP_uni_io_t p_drv)
@@ -33,7 +33,7 @@ uint32_t UniIO_Drv_Register(pType_COMP_uni_io_t p_drv)
     if (p_drv == NULL)
     {
         return IO_ERR_INVALID_ID;
-    }    
+    }
 
     for (i = 0; i < MAX_IO_DRV_NUM; i++)
     {
@@ -53,7 +53,7 @@ uint32_t UniIO_Drv_Register(pType_COMP_uni_io_t p_drv)
             s_drv_list[i] = p_drv;
             return IO_ERR_NONE;
         }
-    }    
+    }
     return IO_ERR_INVALID_ID;
 }
 
@@ -74,7 +74,7 @@ pType_COMP_uni_io_t UniIO_Drv_Get(int id)
     return NULL;
 }
 
-pType_COMP_uni_io_t UniIO_Drv_Open(const char *name)
+pType_COMP_uni_io_t UniIO_Drv_GetByName(const char *name)
 {
     int i;
 
@@ -97,8 +97,6 @@ pType_COMP_uni_io_t UniIO_Drv_Open(const char *name)
     }
     return NULL;
 }
-
-
 
 #if 0
 
@@ -125,23 +123,4 @@ UNI_IO_DEFINE_DRV(drv_gpio, 13);
 
 #endif
 
-
 #endif
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

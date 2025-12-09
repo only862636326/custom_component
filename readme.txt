@@ -30,3 +30,7 @@
 - 添加优先级，每个状态机可设置一个优先级，默认0
 - 添加HopeFsm_GetByName, 可根据名称获取状态机
 - updata 只更新node结点，避免父节点、子节点都更新
+
+2025/12/09 uni_io
+- 改为UniIO_Drv_OPEN 改为UniIO_Drv_GetByName， 更符合实际
+  

@@ -18,7 +18,7 @@ typedef struct Type_Comp_FW
 {
 #if CUST_COMP_UNI_IO
     pType_COMP_uni_io_t (*UniIO_Drv_Get)(int id);
-    pType_COMP_uni_io_t (*UniIO_Drv_Open)(const char *name);
+    pType_COMP_uni_io_t (*UniIO_Drv_GetByName)(const char *name);
     uint32_t (*UniIO_Drv_Register)(pType_COMP_uni_io_t p_drv);
 #endif
 

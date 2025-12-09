@@ -7,7 +7,7 @@ Type_Comp_FW TOP_FW = {
 
 #if CUST_COMP_UNI_IO
     .UniIO_Drv_Get = UniIO_Drv_Get,
-    .UniIO_Drv_Open = UniIO_Drv_Open,
+    .UniIO_Drv_GetByName = UniIO_Drv_GetByName,
     .UniIO_Drv_Register = UniIO_Drv_Register,
 #endif
 

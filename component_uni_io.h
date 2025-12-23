@@ -26,7 +26,7 @@
 	Type_COMP_uni_io_t DRV_NAME = {         \
 		.id = DRV_ID,                       \
 		.name = STRINGIFY(DRV_NAME),        \
-		.open = drv_init,                   \
+		.init = drv_init,                   \
 		.write = drv_write,                 \
 		.read = drv_read,                   \
 	}

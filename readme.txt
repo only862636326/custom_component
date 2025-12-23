@@ -34,3 +34,8 @@
 2025/12/09 uni_io
 - 改为UniIO_Drv_OPEN 改为UniIO_Drv_GetByName， 更符合实际
   
+2025/12/23 main fsm 
+- fsm val change to current_sta_id
+- del p2 
+- add define CALL_IF_NOT_NULL(func, param)
+

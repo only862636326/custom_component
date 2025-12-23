@@ -2,7 +2,7 @@
  ***************************************************************************************************
  * @file        hope_component_fsm.c
  * @author      wsn
- * @version     v0.0.0  
+ * @version     v0.0.0
  * @date        2024.11.02
  * @brief       使用C实现的简单状态机
  *              fsm functon
@@ -75,16 +75,16 @@ void HopeFSM_MulUpdata(pType_hope_fsm_t p_fsm)
 {
     int i;
 
-    if (p_fsm->UpdataCall != NULL)
+    if (p_fsm->pnode->UpdataCall != NULL)
     {
-        p_fsm->UpdataCall(p_fsm);
+        p_fsm->pnode->UpdataCall(p_fsm->pnode);
     }
 
     for (i = 0; i < p_fsm->sta_list_len; i++)
     {
-        if (p_fsm->sta_list[i]->UpdataCall != NULL)
+        if (p_fsm->sta_list[i]->pnode->UpdataCall != NULL)
         {
-            p_fsm->sta_list[i]->UpdataCall(p_fsm->sta_list[i]);
+            p_fsm->sta_list[i]->pnode->UpdataCall(p_fsm->sta_list[i]->pnode);
         }
     }
 }
@@ -97,31 +97,27 @@ void HopeFSM_Updata(pType_hope_fsm_t p_fsm)
     if (p_fsm->pnode != NULL)
     {
         // 调用活动子节点的更新回调函数
-        if (p_fsm->pnode->UpdataCall != NULL)
-        {
-            p_fsm->pnode->UpdataCall(p_fsm->pnode);
-        }
-        // 注意：这里被注释掉的递归调用可能用于深层嵌套的状态机更新
+        CALL_IF_NOT_NULL(p_fsm->pnode->UpdataCall, p_fsm->pnode);
         // HopeFSM_Updata(p_fsm->pnode);
     }
 }
 
 // 状态机验证
-int HopeFsm_ValidateState(pType_hope_fsm_t p_fsm, int state_id)
+pType_hope_fsm_t HopeFsm_ValidateState(pType_hope_fsm_t p_fsm, int state_id)
 {
     int i;
     if (p_fsm->sta_id == state_id)
     {
-        return 1; // 状态有效
+        return p_fsm; // 状态有效
     }
     for (i = 0; i < p_fsm->sta_list_len; i++)
     {
         if (p_fsm->sta_list[i]->sta_id == state_id)
         {
-            return 1; // 状态有效
+            return p_fsm->sta_list[i]; // 状态有效
         }
     }
-    return 0; // 状态无效
+    return NULL; // 状态无效
 }
 
 /// @brief 根据状态ID切换状态机的状态
@@ -130,17 +126,18 @@ int HopeFsm_ValidateState(pType_hope_fsm_t p_fsm, int state_id)
 void HopeFSM_ChangeById(pType_hope_fsm_t p_fsm, int id)
 {
     int i;
-    
+    pType_hope_fsm_t p_node = NULL;
     // 如果目标状态与当前状态相同，则直接返回
-    if (p_fsm->val == id)
+    if (p_fsm->current_sta_id == id)
     {
         return;
     }
-    
-    COMP_LOG_LOOP_FAST("HopeFSMChangeById -- pre: %d, next: %d", p_fsm->sta_id, id);
+
+    COMP_LOG_DEBUG("HopeFSMChangeById -- pre: %d, next: %d", p_fsm->current_sta_id, id);
 
     // 验证目标状态ID是否有效
-    if (!HopeFsm_ValidateState(p_fsm, id))
+    p_node = HopeFsm_ValidateState(p_fsm, id);
+    if (p_node == NULL)
     {
         COMP_LOG_DEBUG("Error: Invalid state ID %d", id);
         return;
@@ -149,46 +146,16 @@ void HopeFSM_ChangeById(pType_hope_fsm_t p_fsm, int id)
     // 如果当前存在活动子状态，则执行退出回调并清空活动子状态
     if (p_fsm->pnode != NULL)
     {
-        if (p_fsm->pnode->ExitCall != NULL)
-        {
-            p_fsm->pnode->ExitCall(p_fsm->pnode);
-            COMP_LOG_DEBUG("         Exit Sta %d", p_fsm->val);
-        }
+        COMP_LOG_DEBUG("         Exit Sta %d", p_fsm->current_sta_id);
+        CALL_IF_NOT_NULL(p_fsm->pnode->ExitCall, p_fsm->pnode);
         p_fsm->pnode = NULL;
     }
 
-    // 如果目标状态是状态机自身的状态
-    if (p_fsm->sta_id == id)
-    {
-        p_fsm->pnode = p_fsm;  // 设置活动子状态为自身
-        p_fsm->val = id;       // 更新状态值
-        
-        // 执行进入回调函数
-        if (p_fsm->pnode->EnterCall != NULL)
-        {
-            p_fsm->pnode->EnterCall(p_fsm->pnode);
-            COMP_LOG_DEBUG("         Enter Sta %d", id);
-        }
-        return;
-    }
+    p_fsm->pnode = p_node;
+    p_fsm->current_sta_id = id; // 更新状态值
 
-    // 在子状态列表中查找目标状态
-    for (i = 0; i < p_fsm->sta_list_len; i++)
-    {
-        if (p_fsm->sta_list[i]->sta_id == id)
-        {
-            p_fsm->pnode = p_fsm->sta_list[i];  // 设置活动子状态
-            p_fsm->val = id;                    // 更新状态值
-
-            // 执行进入回调函数
-            if (p_fsm->pnode->EnterCall != NULL)
-            {
-                p_fsm->pnode->EnterCall(p_fsm->pnode);
-                COMP_LOG_DEBUG("         Enter Sta %d", id);
-            }
-            break;
-        }
-    }
+    COMP_LOG_DEBUG("         Enter Sta %d", p_fsm->current_sta_id);
+    CALL_IF_NOT_NULL(p_node->EnterCall, p_node);
 }
 
 /// @brief 添加一个子状态机
@@ -203,7 +170,7 @@ void HopeFsm_StaAdd(pType_hope_fsm_t prt, pType_hope_fsm_t p)
         COMP_LOG_DEBUG("Error: prt or p is NULL");
         return;
     }
-    if( prt->sta_list == NULL)
+    if (prt->sta_list == NULL)
     {
         COMP_LOG_DEBUG("Error: prt->sta_list is NULL");
         return;
@@ -289,7 +256,6 @@ pType_hope_fsm_t HopeFsm_Get(int sta_id)
     return NULL;
 }
 
-
 pType_hope_fsm_t HopeFsm_GetByName(const char *name)
 {
 #if HOPE_FSM_ROOT
@@ -308,14 +274,7 @@ pType_hope_fsm_t HopeFsm_GetByName(const char *name)
 
 void HopeFSM_ChangeVal(pType_hope_fsm_t p, int val)
 {
-    if (p->val != val)
-    {
-        p->val = val;
-        if (p->ValCHangeCall != NULL)
-        {
-            p->ValCHangeCall(p);
-        }
-    }
+	;
 }
 
 #if 0

@@ -8,18 +8,19 @@
 
 #define HOPE_FSM_ROOT 1
 
+#define CALL_IF_NOT_NULL(func, param) do { if((func) != NULL) (func)(param); } while(0)
+
+
 #define Default_HopeFsm {  \
     .name = "fsm",         \
     .prioritization = 0,   \
     .tick = 0,             \
-    .val = 0,              \
     .sta_list_len = -1,    \
     .sta_list_max = -1,    \
     .prt = NULL,           \
     .pnode = NULL,         \
     .sta_list = NULL,      \
     .p = NULL,             \
-    .p1 = NULL,            \
     .ExitCall = NULL,      \
     .EnterCall = NULL,     \
     .UpdataCall = NULL,    \
@@ -38,14 +39,12 @@
         .prioritization = _prio,                  \
         .tick = 0,                                \
         .sta_id = 0,                              \
-        .val = 0,                                 \
         .sta_list_len = _len,                     \
         .sta_list_max = _max,                     \
         .prt = NULL,                              \
         .pnode = NULL,                            \
         .sta_list = NULL,                         \
         .p = NULL,                                \
-        .p1 = NULL,                               \
         .ExitCall = NULL,                         \
         .EnterCall = NULL,                        \
         .UpdataCall = NULL,                       \
@@ -59,21 +58,15 @@ typedef struct Type_hope_fsm_t
     int tick;
     int prioritization; // 0: low, 1: high
     int sta_id;         // for sta name
-    int val;            // for prt,  current node sta
+    int current_sta_id; // for prt,  current node sta
                         // for node, sta val
-
     int sta_list_len; // only for prt
     int sta_list_max; // only for prt
 
     struct Type_hope_fsm_t *prt;
-    struct Type_hope_fsm_t *pnode;
+    struct Type_hope_fsm_t *pnode; // active node
     struct Type_hope_fsm_t **sta_list; // only for prt
     void *p;
-    void *p1;
-
-    // void (*EnterCall_1)(Type_hope_fsm_t *, void *p);
-    // void (*ExitCall_1)(Type_hope_fsm_t *, void *p);
-    // void (*UpdataCall_1)(Type_hope_fsm_t *, void *p);
 
     void (*ExitCall)(struct Type_hope_fsm_t *);
     void (*EnterCall)(struct Type_hope_fsm_t *);

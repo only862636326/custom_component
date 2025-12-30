@@ -1,15 +1,15 @@
 
+#ifndef __COMP_FW__
+#define __COMP_FW__
+
 #include <stdio.h>
 #include <stdint.h>
-#include "component_include.h"
 #include "component_log.h"
 #include "component_evt.h"
 #include "hope_component_fsm.h"
 #include "component_uni_io.h"
 #include "component_cmd.h"
-
-#ifndef __COMP_FW__
-#define __COMP_FW__
+#include "component_config.h"
 
 #if CUST_COMP_LOG
 #endif
@@ -17,9 +17,9 @@
 typedef struct Type_Comp_FW
 {
 #if CUST_COMP_UNI_IO
-    pType_COMP_uni_io_t (*UniIO_Drv_Get)(int id);
-    pType_COMP_uni_io_t (*UniIO_Drv_GetByName)(const char *name);
-    uint32_t (*UniIO_Drv_Register)(pType_COMP_uni_io_t p_drv);
+    pType_COMP_uni_io_t (*UniIO_Drv_Get)(int);
+    pType_COMP_uni_io_t (*UniIO_Drv_GetByName)(const char *);
+    uint32_t (*UniIO_Drv_Register)(pType_COMP_uni_io_t);
 #endif
 
 #if CUST_COMP_EVT
@@ -34,12 +34,12 @@ typedef struct Type_Comp_FW
 #endif
 
 #if CUST_COMP_FSM
-    pType_hope_fsm_t (*HopeFsm_Get)(int sta_id);
+    pType_hope_fsm_t (*HopeFsm_Get)(int);
     void (*HopeFSM_Tick)(pType_hope_fsm_t, int);
     void (*HopeFSM_Updata)(pType_hope_fsm_t);
     void (*HopeFSM_ChangeById)(pType_hope_fsm_t, int);
     void (*HopeFsm_Init)(pType_hope_fsm_t);
-    void (*HopeFsm_StaAdd)(pType_hope_fsm_t prt, pType_hope_fsm_t p);
+    void (*HopeFsm_StaAdd)(pType_hope_fsm_t, pType_hope_fsm_t);
     void (*HopeFSM_ChangeVal)(pType_hope_fsm_t, int);
 #endif
 

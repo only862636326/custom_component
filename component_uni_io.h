@@ -5,7 +5,7 @@
 #include <stdint.h>
 #include <stdbool.h>
 #include <stdarg.h>
-#include "component_include.h"
+#include "component_config.h"
 
 #if CUST_COMP_UNI_IO
 

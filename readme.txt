@@ -40,4 +40,7 @@
 - add define CALL_IF_NOT_NULL(func, param)
 - test
 
-
+2025/12/30 main fw 
+- 修复fw中的定义错误
+- 所有文件不在使用component_include.h, component_include.h仅为外部使用
+- 添加component_config.h

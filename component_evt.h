@@ -3,7 +3,7 @@
 #define __COMPONENT_EVT_H__
 
 #include <stdint.h>
-#include "component_include.h"
+#include "component_config.h"
 
 #if CUST_COMP_EVT
 

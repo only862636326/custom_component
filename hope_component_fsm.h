@@ -2,7 +2,7 @@
 #define __HOPE_COMPONENT_FSM__
 
 #include <stdint.h>
-#include "component_include.h"
+#include "component_config.h"
 
 #if CUST_COMP_FSM
 

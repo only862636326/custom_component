@@ -35,23 +35,21 @@ extern "C"
 #endif
 
     // extern void HopeEvtRegster(int32_t id);
-
+    
+    extern void HopeEvtRegsterCall(int32_t id, void (*call)(void *));
     extern void HopeEvtRegsterNoCall(int32_t id);
     extern void HopeEvtTirgger(int32_t id, void *p);
     extern void HopeEvtTirggerFast(int32_t idx, void *p);
-    int32_t HopeEvtGetIdx(int id);
+    extern int32_t HopeEvtGetIdx(int32_t id);
     
-#if COMP_EVT_Async
+    #if COMP_EVT_Async
     extern void HopeEvtTask(void *p);
     extern void HopeEvtTirggerAsync(int32_t id, void *p);
-#endif
-
-
-    extern void HopeEvtSubsribe(int32_t id, void (*call)(void *));
-    extern void HopeEvtRegsterCall(int32_t id, void (*call)(void *));
-    
-    extern void HopeEvtSubsribeAsync(int32_t id, void (*call)(void *), void (*finish_call)(void *));
     extern void HopeEvtRegsterAsync(int32_t id, void (*call)(void *), void (*finish_call)(void *));
+    #endif
+    
+    extern void HopeEvtSubsribe(int32_t id, void (*call)(void *));
+    extern void HopeEvtSubsribeAsync(int32_t id, void (*call)(void *), void (*finish_call)(void *));
 
 #ifdef __cplusplus
 } // extern c

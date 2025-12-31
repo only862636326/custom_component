@@ -204,39 +204,22 @@ void HopeFsm_StaAdd(pType_hope_fsm_t prt, pType_hope_fsm_t p)
     // 在正确位置插入新状态机
     prt->sta_list[i] = p;
     prt->sta_list_len++;
-
-    // 初始化子状态机
-    if (p->InitCall != NULL)
-    {
-        p->InitCall(p);
-    }
 }
 
 void HopeFsm_Init(pType_hope_fsm_t p)
 {
-    // p->name = NULL;
-    // p->tick = 0;
-    // p->sta_id = 0;
-    // // p->cur_sta = 0;
-    // p->val = 0;
-
-    // p->sta_list_max = -1;
-    // p->sta_list_len = 0;
-
-    // p->sta_list = NULL;
-    // p->prt = NULL;
-    // p->p = NULL;
-    // p->p1 = NULL;
-    // p->pnode = NULL;
-
-    // p->EnterCall = NULL;
-    // p->ExitCall = NULL;
-    // p->UpdataCall = NULL;
-    // p->ValCHangeCall = NULL;
-
+    int i;
+    COMP_LOG_DEBUG("HopeFsm_Init %s", p->name);
     if (p->InitCall != NULL)
     {
         p->InitCall(p);
+    }
+    for (i = 0; i < p->sta_list_len; i++)
+    {
+        if (p->sta_list[i] != NULL)
+        {
+            HopeFsm_Init(p->sta_list[i]);
+        }
     }
 }
 
@@ -252,6 +235,7 @@ pType_hope_fsm_t HopeFsm_Get(pType_hope_fsm_t prt, int sta_id)
 #endif
     if (p_fsm == NULL)
     {
+        
         return NULL;
     }
     for (i = 0; i < p_fsm->sta_list_len; i++)

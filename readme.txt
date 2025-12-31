@@ -49,3 +49,6 @@
 - uni_io async define 控制，减少变量
 - movd config define to component_config.h
 - HopeFsm_GetByName， 参数更改
+
+2025/12/31 main top_fw
+- 添加一些函数

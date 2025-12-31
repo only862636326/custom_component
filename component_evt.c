@@ -129,7 +129,7 @@ void HopeEvtSubsribeAsync(int32_t id, void (*call)(void *), void (*finish_call)(
 }
 
 // 获取事件idx 
-int32_t HopeEvtGetIdx(int id)
+int32_t HopeEvtGetIdx(int32_t id)
 {
     int i;
     i = 0;

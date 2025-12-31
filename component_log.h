@@ -35,10 +35,10 @@
 #define COMP_LOG_LEVEL_WARN 3
 #define COMP_LOG_LEVEL_INFO 4
 #define COMP_LOG_LEVEL_DEBUG 5
-#define COMP_LOG_LEVEL_LOOP_FAST 20
 #define COMP_LOG_LEVEL_LOOP_SLOW 10
-
+#define COMP_LOG_LEVEL_LOOP_FAST 20
 #define COMP_LOG_LEVEL_ALL 0xff
+
 
 #define COMP_LOG_DEBUG(format, ...)                                                               \
     do                                                                                            \

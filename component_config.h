@@ -31,6 +31,8 @@
 
 #define EVT_UART0_TX_DONE 4
 #define EVT_UART0_RX_DONE 5
+
+#define EVT_SPORT_4_IT 6
 // end for user
 
 #endif

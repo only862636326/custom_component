@@ -9,8 +9,6 @@
 
 #if CUST_COMP_UNI_IO
 
-// IO驱动最大数量
-#define MAX_IO_DRV_NUM 10
 
 #define IO_ERR_NONE 0		   // 无错误
 #define IO_ERR_INVALID_ID 1	   // 无效的驱动ID
@@ -83,6 +81,10 @@ typedef struct Type_COMP_uni_io_t
 #endif
 
 } Type_COMP_uni_io_t, *pType_COMP_uni_io_t;
+
+
+#define uni_read(drv, addr, dat, len, timeout) if (drv->read != NULL) drv->read(addr, dat, len, timeout)
+#define uni_write(drv, addr, dat, len, timeout) if (drv->write != NULL) drv->write(addr, dat, len, timeout)
 
 #ifdef __cplusplus
 extern "C"

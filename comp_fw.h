@@ -14,6 +14,8 @@
 #if CUST_COMP_LOG
 #endif
 
+#define Top_FW TOP_FW
+
 typedef struct Type_Comp_FW
 {
 #if CUST_COMP_UNI_IO
@@ -26,6 +28,9 @@ typedef struct Type_Comp_FW
     void (*HopeEvtSubsribe)(int32_t id, void (*call)(void *));
     void (*HopeEvtRegsterCall)(int32_t id, void (*call)(void *));
     void (*HopeEvtTirgger)(int32_t id, void *p);
+    void (*HopeEvtRegsterNoCall)(int32_t);
+    int32_t (*HopeEvtGetIdx)(int32_t);
+    void (*HopeEvtTirggerFast)(int32_t idx, void *p);
 #endif
 
 #if CUST_COMP_CMD

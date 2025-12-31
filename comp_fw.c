@@ -15,6 +15,9 @@ Type_Comp_FW TOP_FW = {
     .HopeEvtRegsterCall = HopeEvtRegsterCall,
     .HopeEvtSubsribe = HopeEvtSubsribe,
     .HopeEvtTirgger = HopeEvtTirgger,
+    .HopeEvtRegsterNoCall = HopeEvtRegsterNoCall,
+    .HopeEvtGetIdx = HopeEvtGetIdx,
+    .HopeEvtTirggerFast = HopeEvtTirggerFast,
 #endif
 
 #if CUST_COMP_CMD

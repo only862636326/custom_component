@@ -24,8 +24,8 @@
 #include <string.h>
 #if CUST_COMP_UNI_IO
 
-
 pType_COMP_uni_io_t s_drv_list[MAX_IO_DRV_NUM] = {NULL};
+
 uint32_t UniIO_Drv_Register(pType_COMP_uni_io_t p_drv)
 {
     int i;

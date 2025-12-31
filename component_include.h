@@ -3,8 +3,6 @@
 
 
 #include "component_config.h"
-
-
 #include "component_log.h"
 #include "component_evt.h"
 #include "hope_component_fsm.h"

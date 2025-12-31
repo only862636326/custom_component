@@ -34,7 +34,8 @@ typedef struct Type_Comp_FW
 #endif
 
 #if CUST_COMP_FSM
-    pType_hope_fsm_t (*HopeFsm_Get)(int);
+    pType_hope_fsm_t (*HopeFsm_Get)(pType_hope_fsm_t, int);
+    pType_hope_fsm_t (*HopeFsm_GetByName)(pType_hope_fsm_t, const char *);
     void (*HopeFSM_Tick)(pType_hope_fsm_t, int);
     void (*HopeFSM_Updata)(pType_hope_fsm_t);
     void (*HopeFSM_ChangeById)(pType_hope_fsm_t, int);

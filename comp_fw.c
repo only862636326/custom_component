@@ -24,6 +24,7 @@ Type_Comp_FW TOP_FW = {
 
 #if CUST_COMP_FSM
     .HopeFsm_Get = HopeFsm_Get,
+    .HopeFsm_GetByName = HopeFsm_GetByName,
     .HopeFSM_Tick = HopeFSM_Tick,
     .HopeFSM_Updata = HopeFSM_Updata,
     .HopeFSM_ChangeById = HopeFSM_ChangeById,

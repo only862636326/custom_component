@@ -44,3 +44,8 @@
 - 修复fw中的定义错误
 - 所有文件不在使用component_include.h, component_include.h仅为外部使用
 - 添加component_config.h
+
+2025/12/31 main uni_io
+- uni_io async define 控制，减少变量
+- movd config define to component_config.h
+- HopeFsm_GetByName， 参数更改

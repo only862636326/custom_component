@@ -6,7 +6,6 @@
 
 #if CUST_COMP_FSM
 
-#define HOPE_FSM_ROOT 1
 
 #define CALL_IF_NOT_NULL(func, param) do { if((func) != NULL) (func)(param); } while(0)
 
@@ -101,8 +100,8 @@ extern "C"
 #endif
     extern Type_hope_fsm_t g_hope_fsm_root;
     extern const Type_hope_fsm_t NULL_HOPE_FSM;
-    pType_hope_fsm_t HopeFsm_Get(int sta_id);
-    pType_hope_fsm_t HopeFsm_GetByName(const char *name);
+    pType_hope_fsm_t HopeFsm_Get(pType_hope_fsm_t prt, int sta_id);
+    pType_hope_fsm_t HopeFsm_GetByName(pType_hope_fsm_t prt, const char *name);
 
     void HopeFSM_Tick(pType_hope_fsm_t, int);
     void HopeFSM_Updata(pType_hope_fsm_t);

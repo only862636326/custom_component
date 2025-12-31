@@ -240,11 +240,20 @@ void HopeFsm_Init(pType_hope_fsm_t p)
     }
 }
 
-pType_hope_fsm_t HopeFsm_Get(int sta_id)
+pType_hope_fsm_t HopeFsm_Get(pType_hope_fsm_t prt, int sta_id)
 {
-#if HOPE_FSM_ROOT
     int i;
-    pType_hope_fsm_t p_fsm = &g_hope_fsm_root;
+    pType_hope_fsm_t p_fsm = prt;
+#if HOPE_FSM_ROOT
+    if (p_fsm == NULL)
+    {
+        p_fsm = &g_hope_fsm_root;
+    }
+#endif
+    if (p_fsm == NULL)
+    {
+        return NULL;
+    }
     for (i = 0; i < p_fsm->sta_list_len; i++)
     {
         if (p_fsm->sta_list[i]->sta_id == sta_id)
@@ -252,15 +261,24 @@ pType_hope_fsm_t HopeFsm_Get(int sta_id)
             return p_fsm->sta_list[i];
         }
     }
-#endif
     return NULL;
 }
 
-pType_hope_fsm_t HopeFsm_GetByName(const char *name)
+pType_hope_fsm_t HopeFsm_GetByName(pType_hope_fsm_t prt, const char *name)
 {
-#if HOPE_FSM_ROOT
     int i;
-    pType_hope_fsm_t p_fsm = &g_hope_fsm_root;
+    pType_hope_fsm_t p_fsm = prt;
+
+#if HOPE_FSM_ROOT
+    if (p_fsm == NULL)
+    {
+        p_fsm = &g_hope_fsm_root;
+    }
+#endif
+    if (p_fsm == NULL)
+    {
+        return NULL;
+    }
     for (i = 0; i < p_fsm->sta_list_len; i++)
     {
         if (strcmp(p_fsm->sta_list[i]->name, name) == 0)
@@ -268,13 +286,12 @@ pType_hope_fsm_t HopeFsm_GetByName(const char *name)
             return p_fsm->sta_list[i];
         }
     }
-#endif
     return NULL;
 }
 
 void HopeFSM_ChangeVal(pType_hope_fsm_t p, int val)
 {
-	;
+    ;
 }
 
 #if 0

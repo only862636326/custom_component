@@ -7,18 +7,6 @@
 
 #if CUST_COMP_EVT
 
-#define EVT_UDP_REV_MSG 2
-#define EVT_U2__REV_MSG 3
-
-#define EVT_UART0_TX_DONE 4
-#define EVT_UART0_RX_DONE 5
-
-#define COMP_EVT_MAX_NUM 10
-#define COMP_EVT_MAX_CALL 5
-
-#define COMP_EVT_Async 1
-#define COMP_EVT_MAX_BUF 20 // for async event
-
 #define HopeEvtRegster(x, p) HopeEvtRegsterCall(x, p)
 
 // typedef void (*Type_Call_fun)(void *);
@@ -26,6 +14,7 @@
 typedef struct Type_hope_evt_t
 {
     int32_t event_id;
+    char *name;
     void (*call[COMP_EVT_MAX_CALL])(void *);
 #if COMP_EVT_Async
     void (*finish_call[COMP_EVT_MAX_CALL])(void *); //

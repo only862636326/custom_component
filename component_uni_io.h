@@ -53,8 +53,10 @@ typedef struct Type_UniIO_PInfo_t
 typedef struct Type_COMP_uni_io_t
 {
 	int32_t id; // 驱动ID
+#if CUST_COMP_UNI_IO_ASYNC
 	int32_t lock;
-	char name[16]; // 驱动名称
+#endif
+	char *name; // 驱动名称
 
 	// 打开和关闭函数
 	int32_t (*open)(void *);
@@ -64,6 +66,7 @@ typedef struct Type_COMP_uni_io_t
 	int32_t (*read)(uint32_t addr, uint8_t *dat, uint32_t len, uint32_t timeout);
 	int32_t (*write)(uint32_t addr, uint8_t *dat, uint32_t len, uint32_t timeout);
 
+#if CUST_COMP_UNI_IO_ASYNC
 	// 异步读写函数
 	int32_t (*read_async)(uint32_t addr, uint8_t *dat, uint32_t len);
 	int32_t (*write_async)(uint32_t addr, uint8_t *dat, uint32_t len);
@@ -71,10 +74,14 @@ typedef struct Type_COMP_uni_io_t
 	// 回调读写函数
 	int32_t (*read_call)(uint32_t addr, uint8_t *dat, uint32_t len);
 	int32_t (*write_call)(uint32_t addr, uint8_t *dat, uint32_t len);
+#endif
 
+#if CUST_COMP_UNI_IO_PRINT
 	// 调试打印函数
 	int (*printf)(const char *fmt, ...);
 	int (*vprintf)(const char *fmt, va_list arg);
+#endif
+
 } Type_COMP_uni_io_t, *pType_COMP_uni_io_t;
 
 #ifdef __cplusplus
@@ -97,8 +104,3 @@ extern "C"
 #endif
 
 #endif // __COMPONET_UNIIO_H__
-
-
-
-
-

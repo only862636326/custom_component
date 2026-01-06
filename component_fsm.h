@@ -106,6 +106,7 @@ extern "C"
     void HopeFSM_Tick(pType_hope_fsm_t, int);
     void HopeFSM_Updata(pType_hope_fsm_t);
     void HopeFSM_ChangeById(pType_hope_fsm_t, int);
+    void HopeFSM_ChangeByName(pType_hope_fsm_t, const char *name);
     void HopeFsm_Init(pType_hope_fsm_t);
     void HopeFsm_StaAdd(pType_hope_fsm_t prt, pType_hope_fsm_t p);
     void HopeFSM_ChangeVal(pType_hope_fsm_t, int);

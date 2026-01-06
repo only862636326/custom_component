@@ -19,7 +19,7 @@
 #define COMP_EVT_Async 0
 #define COMP_EVT_MAX_BUF 20 // for async event
 
-#define HOPE_FSM_ROOT 0
+#define CUST_COMP_FSM_ROOT 1
 
 #define STRINGIFY_HELPER(x) #x			 // 内层：实际字符串化
 #define STRINGIFY(x) STRINGIFY_HELPER(x) // 外层：触发参数展开

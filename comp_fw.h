@@ -6,7 +6,7 @@
 #include <stdint.h>
 #include "component_log.h"
 #include "component_evt.h"
-#include "hope_component_fsm.h"
+#include "component_fsm.h"
 #include "component_uni_io.h"
 #include "component_cmd.h"
 #include "component_config.h"
@@ -39,6 +39,7 @@ typedef struct Type_Comp_FW
 #endif
 
 #if CUST_COMP_FSM
+    pType_hope_fsm_t pfsm_root;
     pType_hope_fsm_t (*HopeFsm_Get)(pType_hope_fsm_t, int);
     pType_hope_fsm_t (*HopeFsm_GetByName)(pType_hope_fsm_t, const char *);
     void (*HopeFSM_Tick)(pType_hope_fsm_t, int);
@@ -47,6 +48,7 @@ typedef struct Type_Comp_FW
     void (*HopeFsm_Init)(pType_hope_fsm_t);
     void (*HopeFsm_StaAdd)(pType_hope_fsm_t, pType_hope_fsm_t);
     void (*HopeFSM_ChangeVal)(pType_hope_fsm_t, int);
+    void (*HopeFSM_ChangeByName)(pType_hope_fsm_t, const char *);
 #endif
 
 } Type_Comp_FW, *pType_Comp_FW;

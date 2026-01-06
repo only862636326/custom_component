@@ -26,6 +26,9 @@ Type_Comp_FW TOP_FW = {
 #endif
 
 #if CUST_COMP_FSM
+#if CUST_COMP_FSM_ROOT
+	.pfsm_root = &g_hope_fsm_root,
+#endif
     .HopeFsm_Get = HopeFsm_Get,
     .HopeFsm_GetByName = HopeFsm_GetByName,
     .HopeFSM_Tick = HopeFSM_Tick,
@@ -34,6 +37,7 @@ Type_Comp_FW TOP_FW = {
     .HopeFsm_Init = HopeFsm_Init,
     .HopeFsm_StaAdd = HopeFsm_StaAdd,
     .HopeFSM_ChangeVal = HopeFSM_ChangeVal,
+    .HopeFSM_ChangeByName = HopeFSM_ChangeByName,
 #endif
 };
 

@@ -25,7 +25,7 @@
  ***************************************************************************************************
  **/
 
-#include "hope_component_fsm.h"
+#include "component_fsm.h"
 #include "component_log.h"
 #include <stdio.h>
 #include <string.h>
@@ -34,7 +34,7 @@
 
 const Type_hope_fsm_t NULL_HOPE_FSM = Default_HopeFsm;
 
-#if HOPE_FSM_ROOT
+#if CUST_COMP_FSM_ROOT
 static pType_hope_fsm_t sta_plist[10];
 Type_hope_fsm_t g_hope_fsm_root = {
     .sta_list_len = 0,
@@ -146,15 +146,41 @@ void HopeFSM_ChangeById(pType_hope_fsm_t p_fsm, int id)
     // 如果当前存在活动子状态，则执行退出回调并清空活动子状态
     if (p_fsm->pnode != NULL)
     {
-        COMP_LOG_DEBUG("         Exit Sta %d", p_fsm->current_sta_id);
+        COMP_LOG_DEBUG("    Fsm  Exit Sta %s, id: %d", p_fsm->pnode->name, p_fsm->pnode->sta_id);
         CALL_IF_NOT_NULL(p_fsm->pnode->ExitCall, p_fsm->pnode);
         p_fsm->pnode = NULL;
     }
 
     p_fsm->pnode = p_node;
     p_fsm->current_sta_id = id; // 更新状态值
+    
+    COMP_LOG_DEBUG("    Fsm  Enter Sta %s, id: %d", p_node->name, p_node->sta_id);
+    CALL_IF_NOT_NULL(p_node->EnterCall, p_node);
+}
+void HopeFSM_ChangeByName(pType_hope_fsm_t p_fsm, const char *name)
+{
+    pType_hope_fsm_t p_node;
+    p_node = HopeFsm_GetByName(p_fsm, name);
+    
+    
+     if (p_node == NULL)
+    {
+        COMP_LOG_DEBUG("Error: Invalid state name %s", name);   
+        return;
+    }
 
-    COMP_LOG_DEBUG("         Enter Sta %d", p_fsm->current_sta_id);
+    // 如果当前存在活动子状态，则执行退出回调并清空活动子状态
+    if (p_fsm->pnode != NULL)
+    {
+        COMP_LOG_DEBUG("    Fsm  Exit Sta %s, id: %d", p_fsm->pnode->name, p_fsm->pnode->sta_id);
+        CALL_IF_NOT_NULL(p_fsm->pnode->ExitCall, p_fsm->pnode);
+        p_fsm->pnode = NULL;
+    }
+
+    p_fsm->pnode = p_node;
+    p_fsm->current_sta_id = p_node->sta_id; // 更新状态值
+
+    COMP_LOG_DEBUG("    Fsm  Enter Sta %s, id: %d", p_node->name, p_node->sta_id);
     CALL_IF_NOT_NULL(p_node->EnterCall, p_node);
 }
 
@@ -218,6 +244,7 @@ void HopeFsm_Init(pType_hope_fsm_t p)
     {
         if (p->sta_list[i] != NULL)
         {
+        	p->sta_list[i]->p = p->p;
             HopeFsm_Init(p->sta_list[i]);
         }
     }
@@ -263,6 +290,12 @@ pType_hope_fsm_t HopeFsm_GetByName(pType_hope_fsm_t prt, const char *name)
     {
         return NULL;
     }
+
+    if(strcmp(name, prt->name) == 0)
+    {
+        return prt;
+    }
+
     for (i = 0; i < p_fsm->sta_list_len; i++)
     {
         if (strcmp(p_fsm->sta_list[i]->name, name) == 0)

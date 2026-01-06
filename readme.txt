@@ -52,3 +52,7 @@
 
 2025/12/31 main top_fw
 - 添加一些函数
+
+2026/01/06 main fsm
+- 添加fsm - BhangeByBame;
+- rename hope_component_fsm to component_fsm

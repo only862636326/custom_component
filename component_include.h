@@ -4,7 +4,6 @@
 
 #include "component_config.h"
 
-
 #include "component_log.h"
 #include "component_evt.h"
 #include "component_fsm.h"

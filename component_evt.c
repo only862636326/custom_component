@@ -60,13 +60,13 @@ void HopeEvtRegsterNoCall(int32_t id)
         {
             if (evt_list[i].event_id == id) // evt aready in list
             {
-                COMP_LOG_INFO("Event aready exist %d", id);
+                COMP_LOG_FW("Event aready exist %d", id);
                 return;
             }
             if (evt_list[i].event_id == 0) // find empty evt
             {
                 evt_list[i].event_id = id;
-                COMP_LOG_INFO("HopeEvtRegster First OK: %d", id);
+                COMP_LOG_FW("HopeEvtRegster First OK: %d", id);
                 return;
             }
         }
@@ -117,7 +117,7 @@ void HopeEvtSubsribeAsync(int32_t id, void (*call)(void *), void (*finish_call)(
             if (finish_call != NULL)
                 p->finish_call[i] = finish_call;
 #endif
-            COMP_LOG_INFO("HopeEvtSubsribe OK: %d", id);
+            COMP_LOG_FW("HopeEvtSubsribe OK: %d", id);
             break;
         }
         if (p->call[i] == call) // call hava add
@@ -197,7 +197,7 @@ void HopeEvtTirgger(int32_t id, void *var)
         }
         else
         {
-            // COMP_LOG_INFO("tirgger evt");
+            // COMP_LOG_FW("tirgger evt");
             p->call[i](var);
         }
 #if COMP_EVT_Async
@@ -207,7 +207,7 @@ void HopeEvtTirgger(int32_t id, void *var)
         }
         else
         {
-            // COMP_LOG_INFO("tirgger evt");
+            // COMP_LOG_FW("tirgger evt");
             p->finish_call[i](var);
         }
 #endif

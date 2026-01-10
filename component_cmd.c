@@ -25,7 +25,6 @@
 #include "component_cmd.h"
 #if CUST_COMP_CMD
 
-
 static Type_hope_cmd_t cmd_list[COMP_CMD_MAX_NUM];
 
 /// @brief
@@ -34,6 +33,12 @@ static Type_hope_cmd_t cmd_list[COMP_CMD_MAX_NUM];
 void HopeCMDRigster(int32_t id, void *p)
 {
     int i;
+    if(id == 0)
+    {
+        COMP_LOG_WARN("HoepCMDRigster CMD id '0' is not allow ");
+        return;
+    }
+
     for (i = 0; i < COMP_CMD_MAX_NUM; i++)
     {
         if (cmd_list[i].id == id) // evt aready in list
@@ -49,6 +54,7 @@ void HopeCMDRigster(int32_t id, void *p)
             return;
         }
     }
+
     // add evt fail
     COMP_LOG_ERROR("HoepCMDRev list full");
 }
@@ -60,12 +66,19 @@ void HopeCMDRigster(int32_t id, void *p)
 int HopeCMDSend(int32_t id, void *p)
 {
     int i;
+    if(id == 0)
+    {
+        COMP_LOG_WARN("HoepCMDSend CMD empty : %d", id);
+        return 0;
+    }
+
     for (i = 0; i < COMP_CMD_MAX_NUM; i++)
     {
         // find event
         if (cmd_list[i].id == id)
         {
-            return cmd_list[i].call(p);
+            if (cmd_list[i].call(p) != NULL)
+                return cmd_list[i].call(p);
         }
     }
     COMP_LOG_WARN("HoepCMDSend CMD empty : %d", id);
@@ -79,16 +92,18 @@ int HopeCMDSendIdx(int32_t idx, void *p)
         COMP_LOG_ERROR("HopeCMDSendIdx idx error: %d", idx);
         return 0;
     }
-    
+
     if (cmd_list[idx].id == 0)
     {
         COMP_LOG_WARN("HoepCMDSendIdx CMD empty idx: %d", idx);
+        return 0;
+    }
+    if (cmd_list[idx].call(p) == NULL)
+    {
+        COMP_LOG_WARN("HoepCMDSendIdx CMD call NULL idx: %d", idx);
         return 0;
     }
     return cmd_list[idx].call(p);
 }
 
 #endif
-
-
-

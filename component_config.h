@@ -15,7 +15,7 @@
 #define CUST_COMP_UNI_IO_PRINT 0
 
 #define COMP_EVT_MAX_NUM 10
-#define COMP_EVT_MAX_CALL 5
+#define COMP_EVT_MAX_CALL 3
 #define COMP_EVT_Async 0
 #define COMP_EVT_MAX_BUF 20 // for async event
 
@@ -32,7 +32,9 @@
 #define EVT_UART0_TX_DONE 4
 #define EVT_UART0_RX_DONE 5
 
+#define EVT_COLLECTION_CMD 7
 #define EVT_SPORT_4_IT 6
+
 // end for user
 
 #endif

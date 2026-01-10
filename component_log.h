@@ -39,6 +39,17 @@
 #define COMP_LOG_LEVEL_LOOP_FAST 20
 #define COMP_LOG_LEVEL_ALL 0xff
 
+#define COMP_LOG_LEVEL_FW 6
+
+#define COMP_LOG_FW(format, ...)                                                                \
+    do                                                                                          \
+    {                                                                                           \
+        if (COMP_LOG_LEVEL >= COMP_LOG_LEVEL_FW)                                                \
+        {                                                                                       \
+            get_sys_time();                                                                     \
+            COMP_PRINTF("[%20s] [%6d] [FW ]  " format "\n", __FILE__, __LINE__, ##__VA_ARGS__); \
+        }                                                                                       \
+    } while (0)
 
 #define COMP_LOG_DEBUG(format, ...)                                                               \
     do                                                                                            \
@@ -109,6 +120,3 @@
             COMP_PRINTF("[%20s] [%6d] [SLOW]  " format "\n", __FILE__, __LINE__, ##__VA_ARGS__); \
         }                                                                                        \
     } while (0)
-
-
-

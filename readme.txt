@@ -56,3 +56,9 @@
 2026/01/06 main fsm
 - 添加fsm - BhangeByBame;
 - rename hope_component_fsm to component_fsm
+2026/01/07 main fsm
+- add root fsm name
+
+2026/01/07 main 
+- component use self level log "COMP_LOG_FW"
+

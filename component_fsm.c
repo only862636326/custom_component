@@ -39,9 +39,9 @@ static pType_hope_fsm_t sta_plist[10];
 Type_hope_fsm_t g_hope_fsm_root = {
     .sta_list_len = 0,
     .sta_id = -1,
+	.name = "_fsm_root",
     .sta_list = sta_plist,
     .sta_list_max = 10,
-    .UpdataCall = NULL,
 };
 #endif
 
@@ -133,20 +133,20 @@ void HopeFSM_ChangeById(pType_hope_fsm_t p_fsm, int id)
         return;
     }
 
-    COMP_LOG_DEBUG("HopeFSMChangeById -- pre: %d, next: %d", p_fsm->current_sta_id, id);
+    COMP_LOG_FW("HopeFSMChangeById -- pre: %s, %d, next: %d", p_fsm->name, p_fsm->current_sta_id, id);
 
     // 验证目标状态ID是否有效
     p_node = HopeFsm_ValidateState(p_fsm, id);
     if (p_node == NULL)
     {
-        COMP_LOG_DEBUG("Error: Invalid state ID %d", id);
+        COMP_LOG_FW("Error: Invalid state ID %d", id);
         return;
     }
 
     // 如果当前存在活动子状态，则执行退出回调并清空活动子状态
     if (p_fsm->pnode != NULL)
     {
-        COMP_LOG_DEBUG("    Fsm  Exit Sta %s, id: %d", p_fsm->pnode->name, p_fsm->pnode->sta_id);
+        COMP_LOG_FW("    Fsm  Exit %s, id: %d", p_fsm->pnode->name, p_fsm->pnode->sta_id);
         CALL_IF_NOT_NULL(p_fsm->pnode->ExitCall, p_fsm->pnode);
         p_fsm->pnode = NULL;
     }
@@ -154,7 +154,7 @@ void HopeFSM_ChangeById(pType_hope_fsm_t p_fsm, int id)
     p_fsm->pnode = p_node;
     p_fsm->current_sta_id = id; // 更新状态值
     
-    COMP_LOG_DEBUG("    Fsm  Enter Sta %s, id: %d", p_node->name, p_node->sta_id);
+    COMP_LOG_FW("    Fsm  Enter %s, id: %d", p_node->name, p_node->sta_id);
     CALL_IF_NOT_NULL(p_node->EnterCall, p_node);
 }
 void HopeFSM_ChangeByName(pType_hope_fsm_t p_fsm, const char *name)
@@ -162,17 +162,17 @@ void HopeFSM_ChangeByName(pType_hope_fsm_t p_fsm, const char *name)
     pType_hope_fsm_t p_node;
     p_node = HopeFsm_GetByName(p_fsm, name);
     
-    
      if (p_node == NULL)
     {
-        COMP_LOG_DEBUG("Error: Invalid state name %s", name);   
+        COMP_LOG_FW("Error: Invalid state name %s", name);   
         return;
     }
+    COMP_LOG_FW("HopeFSMChangeByName -- pre: %s, %d, next: %s", p_fsm->name, p_fsm->current_sta_id, name);
 
     // 如果当前存在活动子状态，则执行退出回调并清空活动子状态
     if (p_fsm->pnode != NULL)
     {
-        COMP_LOG_DEBUG("    Fsm  Exit Sta %s, id: %d", p_fsm->pnode->name, p_fsm->pnode->sta_id);
+        COMP_LOG_FW("    Fsm  Exit Sta %s, id: %d", p_fsm->pnode->name, p_fsm->pnode->sta_id);
         CALL_IF_NOT_NULL(p_fsm->pnode->ExitCall, p_fsm->pnode);
         p_fsm->pnode = NULL;
     }
@@ -180,7 +180,7 @@ void HopeFSM_ChangeByName(pType_hope_fsm_t p_fsm, const char *name)
     p_fsm->pnode = p_node;
     p_fsm->current_sta_id = p_node->sta_id; // 更新状态值
 
-    COMP_LOG_DEBUG("    Fsm  Enter Sta %s, id: %d", p_node->name, p_node->sta_id);
+    COMP_LOG_FW("    Fsm  Enter Sta %s, id: %d", p_node->name, p_node->sta_id);
     CALL_IF_NOT_NULL(p_node->EnterCall, p_node);
 }
 
@@ -193,12 +193,12 @@ void HopeFsm_StaAdd(pType_hope_fsm_t prt, pType_hope_fsm_t p)
     // 检查输入参数是否有效
     if (prt == NULL || p == NULL)
     {
-        COMP_LOG_DEBUG("Error: prt or p is NULL");
+        COMP_LOG_FW("Error: prt or p is NULL");
         return;
     }
     if (prt->sta_list == NULL)
     {
-        COMP_LOG_DEBUG("Error: prt->sta_list is NULL");
+        COMP_LOG_FW("Error: prt->sta_list is NULL");
         return;
     }
 
@@ -235,7 +235,7 @@ void HopeFsm_StaAdd(pType_hope_fsm_t prt, pType_hope_fsm_t p)
 void HopeFsm_Init(pType_hope_fsm_t p)
 {
     int i;
-    COMP_LOG_DEBUG("HopeFsm_Init %s", p->name);
+    COMP_LOG_FW("HopeFsm_Init %s", p->name);
     if (p->InitCall != NULL)
     {
         p->InitCall(p);

@@ -59,6 +59,10 @@
 2026/01/07 main fsm
 - add root fsm name
 
-2026/01/07 main 
+2026/01/07   main 
 - component use self level log "COMP_LOG_FW"
+
+2026/01/12   main fsm
+- add init debug info 
+- add HopeFsm_StaAdd debug info
 

@@ -26,6 +26,7 @@
 
 
 // for user
+#define EVT_NONE 0
 #define EVT_UDP_REV_MSG 2
 #define EVT_U2__REV_MSG 3
 

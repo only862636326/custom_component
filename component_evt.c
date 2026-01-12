@@ -148,7 +148,7 @@ void HopeEvtTirggerFast(int32_t idx, void *var)
     pType_hope_evt_t p = &evt_list[idx];
     int i;
     i = 0;
-    if (p == NULL)
+    if (p->event_id == EVT_NONE)
     {
         COMP_LOG_WARN("HopeEvtTirggerFast evt empty : %d", idx);
         return;

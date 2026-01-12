@@ -39,7 +39,7 @@ static pType_hope_fsm_t sta_plist[10];
 Type_hope_fsm_t g_hope_fsm_root = {
     .sta_list_len = 0,
     .sta_id = -1,
-	.name = "_fsm_root",
+    .name = "_fsm_root",
     .sta_list = sta_plist,
     .sta_list_max = 10,
 };
@@ -153,7 +153,7 @@ void HopeFSM_ChangeById(pType_hope_fsm_t p_fsm, int id)
 
     p_fsm->pnode = p_node;
     p_fsm->current_sta_id = id; // 更新状态值
-    
+
     COMP_LOG_FW("    Fsm  Enter %s, id: %d", p_node->name, p_node->sta_id);
     CALL_IF_NOT_NULL(p_node->EnterCall, p_node);
 }
@@ -161,10 +161,10 @@ void HopeFSM_ChangeByName(pType_hope_fsm_t p_fsm, const char *name)
 {
     pType_hope_fsm_t p_node;
     p_node = HopeFsm_GetByName(p_fsm, name);
-    
-     if (p_node == NULL)
+
+    if (p_node == NULL)
     {
-        COMP_LOG_FW("Error: Invalid state name %s", name);   
+        COMP_LOG_FW("Error: Invalid state name %s", name);
         return;
     }
     COMP_LOG_FW("HopeFSMChangeByName -- pre: %s, %d, next: %s", p_fsm->name, p_fsm->current_sta_id, name);
@@ -208,28 +208,41 @@ void HopeFsm_StaAdd(pType_hope_fsm_t prt, pType_hope_fsm_t p)
     // 如果状态机列表已满，则不添加
     if (prt->sta_list_len >= prt->sta_list_max)
     {
+        COMP_LOG_FW("Error: State list full");
         return;
     }
-
     // 根据 prioritization 添加到合适位置（高优先级在前）
+    for (i = 0; i < prt->sta_list_len; i++)
+    {
+        // 检查名称是否重复
+        if (strcmp(prt->sta_list[i]->name, p->name) == 0)
+        {
+            COMP_LOG_FW("Error: State name %s already exists", p->name);
+            return;
+        }
+    }
+
+    int _idx = prt->sta_list_len;
     for (i = 0; i < prt->sta_list_len; i++)
     {
         // 找到第一个优先级低于待插入状态机的位置
         if (prt->sta_list[i]->prioritization < p->prioritization)
         {
+            _idx = i;
             break;
         }
     }
 
     // 将后面的元素后移，为新元素腾出空间
-    for (j = prt->sta_list_len; j > i; j--)
+    for (j = prt->sta_list_len; j > _idx; j--)
     {
         prt->sta_list[j] = prt->sta_list[j - 1];
     }
 
     // 在正确位置插入新状态机
-    prt->sta_list[i] = p;
+    prt->sta_list[_idx] = p;
     prt->sta_list_len++;
+    COMP_LOG_FW("HopeFsm_StaAdd :%d, %s <- %s,prioritization: %d", _idx, prt->name, p->name, p->prioritization);
 }
 
 void HopeFsm_Init(pType_hope_fsm_t p)
@@ -244,7 +257,7 @@ void HopeFsm_Init(pType_hope_fsm_t p)
     {
         if (p->sta_list[i] != NULL)
         {
-        	p->sta_list[i]->p = p->p;
+            p->sta_list[i]->p = p->p;
             HopeFsm_Init(p->sta_list[i]);
         }
     }
@@ -262,7 +275,7 @@ pType_hope_fsm_t HopeFsm_Get(pType_hope_fsm_t prt, int sta_id)
 #endif
     if (p_fsm == NULL)
     {
-        
+
         return NULL;
     }
     for (i = 0; i < p_fsm->sta_list_len; i++)
@@ -291,7 +304,7 @@ pType_hope_fsm_t HopeFsm_GetByName(pType_hope_fsm_t prt, const char *name)
         return NULL;
     }
 
-    if(strcmp(name, prt->name) == 0)
+    if (strcmp(name, prt->name) == 0)
     {
         return prt;
     }

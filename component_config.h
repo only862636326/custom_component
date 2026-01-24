@@ -1,7 +1,7 @@
 #ifndef __COMPONENT_CONFIG_H__
 #define __COMPONENT_CONFIG_H__
 
-#define CUST_COMP_CMD 0
+#define CUST_COMP_CMD 1
 #define CUST_COMP_EVT 1
 #define CUST_COMP_LOG 1
 #define CUST_COMP_FSM 1
@@ -15,9 +15,10 @@
 #define CUST_COMP_UNI_IO_PRINT 0
 
 #define COMP_EVT_MAX_NUM 10
-#define COMP_EVT_MAX_CALL 3
+#define COMP_EVT_MAX_CALL 50
 #define COMP_EVT_Async 0
 #define COMP_EVT_MAX_BUF 20 // for async event
+#define COMP_EVT_NAME_LEN 16 // for async event
 
 #define CUST_COMP_FSM_ROOT 1
 
@@ -27,16 +28,7 @@
 
 // for user
 #define EVT_NONE 0
-#define EVT_UDP_REV_MSG 2
-#define EVT_U2__REV_MSG 3
 
-#define EVT_UART0_TX_DONE 4
-#define EVT_UART0_RX_DONE 5
-
-#define EVT_COLLECTION_CMD 7
-#define EVT_SPORT_4_IT 6
-
-// end for user
 
 #endif
 

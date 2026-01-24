@@ -1,6 +1,6 @@
 /**
  ***************************************************************************************************
- * @file        component_evt.c
+ * @file        component_cmd.c
  * @author      wsn
  * @version     v0.0.0
  * @date        2024.11.27
@@ -23,87 +23,115 @@
  **/
 
 #include "component_cmd.h"
+#include <string.h>
+
+
 #if CUST_COMP_CMD
 
-static Type_hope_cmd_t cmd_list[COMP_CMD_MAX_NUM];
+static pType_hope_cmd_t cmd_list[COMP_CMD_MAX_NUM];
 
 /// @brief
-/// @param id
-/// @param p
-void HopeCMDRigster(int32_t id, void *p)
+/// @param pcmd
+int HopeCMDRigster(pType_hope_cmd_t pcmd)
 {
     int i;
-    if(id == 0)
+    if (pcmd == NULL)
     {
-        COMP_LOG_WARN("HoepCMDRigster CMD id '0' is not allow ");
-        return;
+        COMP_LOG_WARN("HopeCMDRigster pcmd is NULL");
+        return -1;
     }
 
-    for (i = 0; i < COMP_CMD_MAX_NUM; i++)
+    for (i = 1; i < COMP_CMD_MAX_NUM; i++)
     {
-        if (cmd_list[i].id == id) // evt aready in list
+        if (cmd_list[i] == NULL)
         {
-            COMP_LOG_INFO("HoepCMDRev CMD aready exist %d", id);
-            return;
-        }
-        if (cmd_list[i].id == 0) // find empty evt
-        {
-            cmd_list[i].id = id;
-            cmd_list[i].call = p;
-            COMP_LOG_INFO("HoepCMDRev OK: %d", id);
-            return;
+            cmd_list[i] = pcmd;
+            pcmd->id = i;
+            COMP_LOG_FW("HopeCMDRigster OK: %d %s", pcmd->id, pcmd->name ? pcmd->name : "");
+            return i;
         }
     }
 
-    // add evt fail
-    COMP_LOG_ERROR("HoepCMDRev list full");
+    COMP_LOG_ERROR("HopeCMDRigster list full");
+    return -1;
 }
 
 /// @brief
-/// @param id
-/// @param p
+/// @param name
 /// @return
-int HopeCMDSend(int32_t id, void *p)
+int HopeCMDSendName(const char *name)
 {
     int i;
-    if(id == 0)
+    if (name == NULL)
     {
-        COMP_LOG_WARN("HoepCMDSend CMD empty : %d", id);
-        return 0;
+        COMP_LOG_WARN("HopeCMDSendName name is NULL");
+        return -1;
     }
 
     for (i = 0; i < COMP_CMD_MAX_NUM; i++)
     {
-        // find event
-        if (cmd_list[i].id == id)
+        if (cmd_list[i] != NULL && cmd_list[i]->name != NULL && strcmp(cmd_list[i]->name, name) == 0)
         {
-            if (cmd_list[i].call(p) != NULL)
-                return cmd_list[i].call(p);
+            if (cmd_list[i]->call != NULL)
+            {
+                COMP_LOG_FW("HopeCMDSendName call OK: %s", name);
+                return cmd_list[i]->call(NULL);
+            }
+            else
+            {
+                COMP_LOG_WARN("HopeCMDSendName call is NULL: %s", name);
+                return -1;
+            }
         }
     }
-    COMP_LOG_WARN("HoepCMDSend CMD empty : %d", id);
-    return 0;
+    COMP_LOG_WARN("HopeCMDSendName CMD not found: %s", name);
+    return -1;
 }
 
-int HopeCMDSendIdx(int32_t idx, void *p)
+int HopeCMDSendIdx(int32_t idx)
 {
     if (idx < 0 || idx >= COMP_CMD_MAX_NUM)
     {
         COMP_LOG_ERROR("HopeCMDSendIdx idx error: %d", idx);
-        return 0;
+        return -1;
     }
 
-    if (cmd_list[idx].id == 0)
+    if (cmd_list[idx] == NULL)
     {
-        COMP_LOG_WARN("HoepCMDSendIdx CMD empty idx: %d", idx);
-        return 0;
+        COMP_LOG_WARN("HopeCMDSendIdx CMD empty idx: %d", idx);
+        return -1;
     }
-    if (cmd_list[idx].call(p) == NULL)
+    if (cmd_list[idx]->call == NULL)
     {
-        COMP_LOG_WARN("HoepCMDSendIdx CMD call NULL idx: %d", idx);
-        return 0;
+        COMP_LOG_WARN("HopeCMDSendIdx CMD call NULL idx: %d", idx);
+        return -1;
     }
-    return cmd_list[idx].call(p);
+    return cmd_list[idx]->call(NULL);
 }
+
+int HopeCMDSendFast(int32_t idx)
+{
+    return cmd_list[idx]->call(NULL);
+}
+
+pType_hope_cmd_t HopeCMDGet(const char *name)
+{
+    int i;
+    if (name == NULL)
+    {
+        COMP_LOG_WARN("HopeCMDGet name is NULL");
+        return NULL;
+    }
+    for(i = 0; i < COMP_CMD_MAX_NUM;i++)
+    {
+        if (cmd_list[i] != NULL && cmd_list[i]->name != NULL && strcmp(cmd_list[i]->name, name) == 0)
+        {
+            return cmd_list[i];
+        }
+    }
+    COMP_LOG_WARN("HopeCMDGet CMD not found: %s", name);
+    return NULL;
+}
+
 
 #endif

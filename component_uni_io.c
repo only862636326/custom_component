@@ -20,8 +20,10 @@
 
 #include <stdio.h>
 #include <stdarg.h>
-#include "component_uni_io.h"
 #include <string.h>
+#include "component_uni_io.h"
+#include "component_log.h"
+
 #if CUST_COMP_UNI_IO
 
 pType_COMP_uni_io_t s_drv_list[MAX_IO_DRV_NUM] = {NULL};
@@ -40,7 +42,8 @@ uint32_t UniIO_Drv_Register(pType_COMP_uni_io_t p_drv)
         // 名称匹配
         if (strcmp(s_drv_list[i]->name, p_drv->name) == 0)
         {
-            // 如果有重复的名称，直接返回
+            // 如果有重复的名称，直接返回错误
+            COMP_LOG_FW("uni io drv name %s already registered", p_drv->name);
             return IO_ERR_INVALID_ID;
         }
     }
@@ -51,6 +54,7 @@ uint32_t UniIO_Drv_Register(pType_COMP_uni_io_t p_drv)
         if (s_drv_list[i] == NULL)
         {
             s_drv_list[i] = p_drv;
+            COMP_LOG_FW("register uni io drv :%s, id %d", p_drv->name, p_drv->id);
             return IO_ERR_NONE;
         }
     }
@@ -95,6 +99,7 @@ pType_COMP_uni_io_t UniIO_Drv_GetByName(const char *name)
             return s_drv_list[i];
         }
     }
+    COMP_LOG_FW("uni io drv name :%s: not found", name);
     return NULL;
 }
 

@@ -16,13 +16,16 @@ Type_Comp_FW TOP_FW = {
     .HopeEvtSubsribe = HopeEvtSubsribe,
     .HopeEvtTirgger = HopeEvtTirgger,
     .HopeEvtRegsterNoCall = HopeEvtRegsterNoCall,
-    .HopeEvtGetIdx = HopeEvtGetIdx,
+    .HopeEvtGet = HopeEvtGet,
     .HopeEvtTirggerFast = HopeEvtTirggerFast,
 #endif
 
 #if CUST_COMP_CMD
-    .HopeCMDSend = HopeCMDSend,
+    .HopeCMDSendName = HopeCMDSendName,
+    .HopeCMDSendIdx = HopeCMDSendIdx,
+    .HopeCMDSendFast = HopeCMDSendFast,
     .HopeCMDRigster = HopeCMDRigster,
+    .HopeCMDGet = HopeCMDGet,
 #endif
 
 #if CUST_COMP_FSM

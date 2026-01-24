@@ -66,3 +66,8 @@
 - add init debug info 
 - add HopeFsm_StaAdd debug info
 
+2026/01/24 main evn, cmd
+- 完善cmd, 使用name
+- evt 改为name, 不在使用id, 方便阅读
+- evt call, 改为list, 减少空间浪费
+

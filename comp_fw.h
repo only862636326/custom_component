@@ -25,17 +25,20 @@ typedef struct Type_Comp_FW
 #endif
 
 #if CUST_COMP_EVT
-    void (*HopeEvtSubsribe)(int32_t id, void (*call)(void *));
-    void (*HopeEvtRegsterCall)(int32_t id, void (*call)(void *));
-    void (*HopeEvtTirgger)(int32_t id, void *p);
-    void (*HopeEvtRegsterNoCall)(int32_t);
-    int32_t (*HopeEvtGetIdx)(int32_t);
-    void (*HopeEvtTirggerFast)(int32_t idx, void *p);
+    int32_t (*HopeEvtSubsribe)(const char *name, void (*call)(void *));
+    int32_t (*HopeEvtRegsterCall)(const char *name, void (*call)(void *));
+    int32_t (*HopeEvtTirgger)(const char *name, void *p);
+    int32_t (*HopeEvtRegsterNoCall)(const char *name);
+    pType_hope_evt_t (*HopeEvtGet)(const char *name);
+    int32_t (*HopeEvtTirggerFast)(int32_t idx, void *p);
 #endif
 
 #if CUST_COMP_CMD
-    int (*HopeCMDSend)(int32_t id, void *p);
-    void (*HopeCMDRigster)(int32_t id, void *p);
+    int (*HopeCMDSendName)(const char *name);
+    int (*HopeCMDSendIdx)(int32_t idx);
+    int (*HopeCMDSendFast)(int32_t idx);
+    int (*HopeCMDRigster)(pType_hope_cmd_t pcmd);
+    pType_hope_cmd_t (*HopeCMDGet)(const char *name);
 #endif
 
 #if CUST_COMP_FSM

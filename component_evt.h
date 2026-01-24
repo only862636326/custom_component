@@ -11,23 +11,18 @@
 
 // typedef void (*Type_Call_fun)(void *);
 
+typedef struct Type_evn_call_list_t
+{
+    void (*call)(void *);
+    struct Type_evn_call_list_t *next_call;
+} Type_evn_call_list_t, *pType_evn_call_list_t;
+
 typedef struct Type_hope_evt_t
 {
     int32_t event_id;
-    char *name;
-    void (*call[COMP_EVT_MAX_CALL])(void *);
-#if COMP_EVT_Async
-    void (*finish_call[COMP_EVT_MAX_CALL])(void *); //
-#endif
+    char name[COMP_EVT_NAME_LEN];
+    pType_evn_call_list_t call_list;
 } Type_hope_evt_t, *pType_hope_evt_t;
-
-#if COMP_EVT_Async
-typedef struct Type_hope_evt_trg_t
-{
-    int32_t event_id;
-    void *p;
-} Type_hope_evt_trg_t, *pType_hope_evt_trg_t;
-#endif
 
 #ifdef __cplusplus
 extern "C"
@@ -36,20 +31,14 @@ extern "C"
 
     // extern void HopeEvtRegster(int32_t id);
     
-    extern void HopeEvtRegsterCall(int32_t id, void (*call)(void *));
-    extern void HopeEvtRegsterNoCall(int32_t id);
-    extern void HopeEvtTirgger(int32_t id, void *p);
-    extern void HopeEvtTirggerFast(int32_t idx, void *p);
-    extern int32_t HopeEvtGetIdx(int32_t id);
+    extern int32_t HopeEvtRegsterCall(const char *name, void (*call)(void *));
+    extern int32_t HopeEvtRegsterNoCall(const char *name);
+    extern int32_t HopeEvtSubsribe(const char *name, void (*call)(void *));
+
+    extern int32_t HopeEvtTirgger(const char *name, void *p);
+    extern int32_t HopeEvtTirggerFast(int32_t idx, void *p);
+    extern pType_hope_evt_t HopeEvtGet(const char *name);
     
-    #if COMP_EVT_Async
-    extern void HopeEvtTask(void *p);
-    extern void HopeEvtTirggerAsync(int32_t id, void *p);
-    extern void HopeEvtRegsterAsync(int32_t id, void (*call)(void *), void (*finish_call)(void *));
-    #endif
-    
-    extern void HopeEvtSubsribe(int32_t id, void (*call)(void *));
-    extern void HopeEvtSubsribeAsync(int32_t id, void (*call)(void *), void (*finish_call)(void *));
 
 #ifdef __cplusplus
 } // extern c

@@ -27,9 +27,8 @@
 #define COMP_PRINTF printf
 
 #define get_sys_time()
-#define COMP_LOG_LEVEL COMP_LOG_LEVEL_FW
 
-#define COMP_LOG_LEVEL_FW 6
+#define COMP_LOG_LEVEL COMP_LOG_LEVEL_FW
 
 #define COMP_LOG_LEVEL_OFF 0
 #define COMP_LOG_LEVEL_USER 1
@@ -37,6 +36,7 @@
 #define COMP_LOG_LEVEL_WARN 3
 #define COMP_LOG_LEVEL_INFO 4
 #define COMP_LOG_LEVEL_DEBUG 5
+#define COMP_LOG_LEVEL_FW 6
 
 #define COMP_LOG_LEVEL_LOOP_SLOW 10
 #define COMP_LOG_LEVEL_LOOP_FAST 20

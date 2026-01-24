@@ -4,12 +4,11 @@
 
 #include <stdint.h>
 #include "component_log.h"
-#include "component_include.h"
+#include "component_config.h"
+
 
 #if CUST_COMP_CMD
 
-#define COMP_CMD_MAX_NUM 10
-// #define COMP_CMD_MAX_CALL 5
 
 typedef struct Type_hope_cmd_t
 {
@@ -23,13 +22,11 @@ extern "C"
 {
 #endif
 
-    extern int HopeCMDSend(int32_t id, void *p);
-    extern int HopeCMDSendIdx(int32_t idx, void *p);
-
-    extern void HopeCMDRigster(int32_t id, void *p);
-    extern void HopeEvtSubsribe(int32_t id, void (*call)(void *));
-    extern void HopeEvtRegsterCall(int32_t id, void (*call)(void *));
-
+    extern int HopeCMDSendName(const char *name);
+    extern int HopeCMDSendIdx(int32_t idx);
+    extern int HopeCMDSendFast(int32_t idx);
+    extern int HopeCMDRigster(pType_hope_cmd_t pcmd);
+    extern pType_hope_cmd_t HopeCMDGet(const char *name);
 
 #ifdef __cplusplus
 } // extern c

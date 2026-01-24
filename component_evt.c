@@ -37,239 +37,180 @@
 #include "component_evt.h"
 #include "component_log.h"
 #include <stdio.h>
+#include <string.h>
 
 #if CUST_COMP_EVT
 
 static Type_hope_evt_t evt_list[COMP_EVT_MAX_NUM];
-
-#if COMP_EVT_Async
-static Type_hope_evt_trg_t evt_circle_buf[COMP_EVT_MAX_BUF];
-int evt_circle_head = 0;
-int evt_circle__end = 0;
-#endif
+static Type_evn_call_list_t evt_call_list[COMP_EVT_MAX_CALL];
 
 /// @brief 事件注册
-/// @param id
-void HopeEvtRegsterNoCall(int32_t id)
+/// @param name
+/// @return 事件ID
+int32_t HopeEvtRegsterNoCall(const char *name)
 {
     int i;
     i = 0;
-    if (id != 0)
+    if (name != NULL)
     {
         for (i = 0; i < COMP_EVT_MAX_NUM; i++)
         {
-            if (evt_list[i].event_id == id) // evt aready in list
+            if (evt_list[i].event_id != 0 && strcmp(evt_list[i].name, name) == 0) // evt aready in list
             {
-                COMP_LOG_FW("Event aready exist %d", id);
-                return;
+                COMP_LOG_FW("Event aready exist %s", name);
+                return evt_list[i].event_id;
             }
+
             if (evt_list[i].event_id == 0) // find empty evt
             {
-                evt_list[i].event_id = id;
-                COMP_LOG_FW("HopeEvtRegster First OK: %d", id);
-                return;
+                evt_list[i].event_id = i + 1;
+                strncpy(evt_list[i].name, name, COMP_EVT_NAME_LEN - 1);
+                evt_list[i].name[COMP_EVT_NAME_LEN - 1] = '\0';
+                evt_list[i].call_list = NULL;
+                COMP_LOG_FW("HopeEvtRegster First OK: %s", name);
+                return evt_list[i].event_id;
             }
         }
     }
     // add evt fail
     COMP_LOG_ERROR("Event list full");
-    return;
+    return 0;
 }
 
 /// @brief 事件订阅
-/// @param id
-/// @param p
-void HopeEvtSubsribe(int32_t id, void (*call)(void *))
-{
-    HopeEvtSubsribeAsync(id, call, NULL);
-}
-
-void HopeEvtSubsribeAsync(int32_t id, void (*call)(void *), void (*finish_call)(void *))
+/// @param name
+/// @param call
+/// @return 0 成功 -1 失败
+int32_t HopeEvtSubsribe(const char *name, void (*call)(void *))
 {
     int i;
     pType_hope_evt_t p = NULL;
 
-    if (call == NULL)
-        return;
+    if (call == NULL || name == NULL)
+        return -1;
 
     for (i = 0; i < COMP_EVT_MAX_NUM; i++)
     {
         // find event
-        if (evt_list[i].event_id == id)
+        if (evt_list[i].event_id != 0 && strcmp(evt_list[i].name, name) == 0)
         {
             p = &evt_list[i];
+            break;
         }
     }
 
     if (p == NULL)
     {
         //
-        COMP_LOG_WARN("HopeEvtSubsribe evt empty %d", id);
-        return;
+        COMP_LOG_WARN("HopeEvtSubsribe evt empty %s", name);
+        return -1;
     }
 
+    // Check if call already exists in the list
+    pType_evn_call_list_t current = p->call_list;
+    while (current != NULL)
+    {
+        if (current->call == call)
+        {
+            COMP_LOG_WARN("HopeEvtSubsribe call exsit: %s", name);
+            return -1;
+        }
+        current = current->next_call;
+    }
+
+    // Find an empty slot in the static call list
     for (i = 0; i < COMP_EVT_MAX_CALL; i++)
     {
-        if (p->call[i] == NULL) // call is not null
+        if (evt_call_list[i].call == NULL)
         {
-            p->call[i] = call;
-#if COMP_EVT_Async
-            if (finish_call != NULL)
-                p->finish_call[i] = finish_call;
-#endif
-            COMP_LOG_FW("HopeEvtSubsribe OK: %d", id);
-            break;
-        }
-        if (p->call[i] == call) // call hava add
-        {
-            COMP_LOG_WARN("HopeEvtSubsribe call exsit: %d", id);
-            break;
+            evt_call_list[i].call = call;
+            evt_call_list[i].next_call = p->call_list;
+            p->call_list = &evt_call_list[i];
+            COMP_LOG_FW("HopeEvtSubsribe OK: %s", name);
+            return 0;
         }
     }
+    // No empty slot found
+    COMP_LOG_ERROR("Call list full");
+    return -1;
 }
 
 // 获取事件idx 
-int32_t HopeEvtGetIdx(int32_t id)
+pType_hope_evt_t HopeEvtGet(const char *name)
 {
     int i;
     i = 0;
     for(i = 0; i < COMP_EVT_MAX_NUM; i++)
     {
-        if(evt_list[i].event_id == id)
+        if(evt_list[i].event_id != 0 && strcmp(evt_list[i].name, name) == 0)
         {
-            return i;
+            return &evt_list[i];
         }
     }
-    return -1;
+    return NULL;
 }
 
-void HopeEvtTirggerFast(int32_t idx, void *var)
+int32_t HopeEvtTirggerFast(int32_t idx, void *var)
 {
     pType_hope_evt_t p = &evt_list[idx];
-    int i;
-    i = 0;
     if (p->event_id == EVT_NONE)
     {
         COMP_LOG_WARN("HopeEvtTirggerFast evt empty : %d", idx);
-        return;
+        return -1;
     }
-    for(i = 0; i < COMP_EVT_MAX_CALL; i++)
+    // Traverse the static call list
+    pType_evn_call_list_t current = p->call_list;
+    while (current != NULL)
     {
-        if (p->call[i] == NULL) // call is not null
-        {
-            break;
-        }
-        else
-        {
-            p->call[i](var);
-        }
+        current->call(var);
+        current = current->next_call;
     }
+    return 0;
 }
 
 /// @brief 事件触发
-/// @param id
+/// @param name
 /// @param p
-void HopeEvtTirgger(int32_t id, void *var)
+int32_t HopeEvtTirgger(const char *name, void *var)
 {
     pType_hope_evt_t p = NULL;
     int i;
     for (i = 0; i < COMP_EVT_MAX_NUM; i++)
     {
-        if (evt_list[i].event_id == id) // find evt
+        if (evt_list[i].event_id != 0 && strcmp(evt_list[i].name, name) == 0) // find evt
         {
             p = &evt_list[i];
+            break;
         }
     }
 
     if (p == NULL)
     {
-        COMP_LOG_WARN("HoepEvtTirgger evt empty : %d", id);
-        return;
+        COMP_LOG_WARN("HoepEvtTirgger evt empty : %s", name);
+        return -1;
     }
 
-    for (i = 0; i < COMP_EVT_MAX_CALL; i++)
+    // Traverse the static call list
+    pType_evn_call_list_t current = p->call_list;
+    while (current != NULL)
     {
-        // call is not null, call fun
-        // call is null, break
-        if (p->call[i] == NULL)
-        {
-            break;
-        }
-        else
-        {
-            // COMP_LOG_FW("tirgger evt");
-            p->call[i](var);
-        }
-#if COMP_EVT_Async
-        if (p->finish_call[i] == NULL)
-        {
-            break;
-        }
-        else
-        {
-            // COMP_LOG_FW("tirgger evt");
-            p->finish_call[i](var);
-        }
-#endif
+        current->call(var);
+        current = current->next_call;
     }
+    return 0;
 }
 
 /// @brief
-/// @param id
+/// @param name
 /// @param call
-void HopeEvtRegsterCall(int32_t id, void (*call)(void *))
+/// @return 事件ID
+int32_t HopeEvtRegsterCall(const char *name, void (*call)(void *))
 {
-    HopeEvtRegsterNoCall(id);
+    int32_t id = HopeEvtRegsterNoCall(name);
     if (call != NULL)
-        HopeEvtSubsribe(id, call);
+        HopeEvtSubsribe(name, call);
+    return id;
 }
-
-void HopeEvtRegsterAsync(int32_t id, void (*call)(void *), void (*finish_call)(void *))
-{
-    HopeEvtRegsterNoCall(id);
-    if (call != NULL)
-        HopeEvtSubsribeAsync(id, call, finish_call);
-}
-
-#if COMP_EVT_Async
-
-/// @brief
-/// @param id
-/// @param p
-void HopeEvtTirggerAsync(int32_t id, void *p)
-{
-    int x;
-    x = (evt_circle_head + 1) % COMP_EVT_MAX_BUF;
-    // printf("%d %d\n", x, evt_circle_head);
-    if (x == evt_circle_head)
-    {
-        COMP_LOG_WARN("HopeEvtTirggerAsync buff full : %d", id);
-        return;
-    }
-    else
-    {
-        evt_circle_head++;
-        evt_circle_head %= COMP_EVT_MAX_BUF;
-
-        evt_circle_buf[evt_circle_head].event_id = id;
-        evt_circle_buf[evt_circle_head].p = p;
-    }
-}
-
-/// @brief
-/// @param p
-void HopeEvtTask(void *p)
-{
-    while (evt_circle__end != evt_circle_head)
-    {
-        evt_circle__end++;
-        evt_circle__end %= COMP_EVT_MAX_BUF;
-        HopeEvtTirgger(evt_circle_buf[evt_circle__end].event_id, evt_circle_buf[evt_circle__end].p);
-        // delay (10);
-    }
-}
-
-#endif
 
 #if 0
 // demo
@@ -285,20 +226,11 @@ int main(int argc, char const *argv[])
     HopeEvtRegster(1, evt_call);
     HopeEvtRegster(2, evt_call);
 
-    HopeEvtTirggerAsync(1, 0x01);
-    HopeEvtTirggerAsync(1, 0x02);
-    HopeEvtTirggerAsync(2, 0x03);
-    HopeEvtTirggerAsync(2, 0x04);
-    HopeEvtTirggerAsync(2, 0x05);
-    HopeEvtTirggerAsync(2, 0x06);
-    HopeEvtTirggerAsync(2, 0x07);
-    HopeEvtTirggerAsync(2, 0x08);
-    HopeEvtTirggerAsync(2, 0x09);
-    HopeEvtTirggerAsync(2, 0x0A);
-    HopeEvtTirggerAsync(2, 0x0B);
-    HopeEvtTirggerAsync(3, 0x0C);
-
-    HopeEvtTask(NULL);
+    HopeEvtTirggerName("event1", (void *)0x01);
+    HopeEvtTirggerName("event1", (void *)0x02);
+    HopeEvtTirggerName("event2", (void *)0x03);
+    HopeEvtTirggerName("event2", (void *)0x04);
+    HopeEvtTirggerName("event2", (void *)0x05);
 
     return 0;
 }

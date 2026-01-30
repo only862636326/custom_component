@@ -58,8 +58,9 @@ int HopeCMDRigster(pType_hope_cmd_t pcmd)
 
 /// @brief
 /// @param name
+/// @param p
 /// @return
-int HopeCMDSendName(const char *name)
+int HopeCMDSendName(const char *name, void *p)
 {
     int i;
     if (name == NULL)
@@ -75,7 +76,7 @@ int HopeCMDSendName(const char *name)
             if (cmd_list[i]->call != NULL)
             {
                 COMP_LOG_FW("HopeCMDSendName call OK: %s", name);
-                return cmd_list[i]->call(NULL);
+                return cmd_list[i]->call(p);
             }
             else
             {
@@ -88,7 +89,7 @@ int HopeCMDSendName(const char *name)
     return -1;
 }
 
-int HopeCMDSendIdx(int32_t idx)
+int HopeCMDSendIdx(int32_t idx, void *p)
 {
     if (idx < 0 || idx >= COMP_CMD_MAX_NUM)
     {
@@ -106,12 +107,12 @@ int HopeCMDSendIdx(int32_t idx)
         COMP_LOG_WARN("HopeCMDSendIdx CMD call NULL idx: %d", idx);
         return -1;
     }
-    return cmd_list[idx]->call(NULL);
+    return cmd_list[idx]->call(p);
 }
 
-int HopeCMDSendFast(int32_t idx)
+int HopeCMDSendFast(int32_t idx, void *p)
 {
-    return cmd_list[idx]->call(NULL);
+    return cmd_list[idx]->call(p);
 }
 
 pType_hope_cmd_t HopeCMDGet(const char *name)
@@ -126,6 +127,7 @@ pType_hope_cmd_t HopeCMDGet(const char *name)
     {
         if (cmd_list[i] != NULL && cmd_list[i]->name != NULL && strcmp(cmd_list[i]->name, name) == 0)
         {
+            COMP_LOG_FW("HopeCMDGet CMD Get: %s", name);
             return cmd_list[i];
         }
     }

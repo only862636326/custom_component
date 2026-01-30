@@ -53,7 +53,7 @@ int32_t HopeEvtRegsterNoCall(const char *name)
     i = 0;
     if (name != NULL)
     {
-        for (i = 0; i < COMP_EVT_MAX_NUM; i++)
+        for (i = 1; i < COMP_EVT_MAX_NUM; i++)
         {
             if (evt_list[i].event_id != 0 && strcmp(evt_list[i].name, name) == 0) // evt aready in list
             {
@@ -63,7 +63,7 @@ int32_t HopeEvtRegsterNoCall(const char *name)
 
             if (evt_list[i].event_id == 0) // find empty evt
             {
-                evt_list[i].event_id = i + 1;
+                evt_list[i].event_id = i;
                 strncpy(evt_list[i].name, name, COMP_EVT_NAME_LEN - 1);
                 evt_list[i].name[COMP_EVT_NAME_LEN - 1] = '\0';
                 evt_list[i].call_list = NULL;
@@ -89,7 +89,7 @@ int32_t HopeEvtSubsribe(const char *name, void (*call)(void *))
     if (call == NULL || name == NULL)
         return -1;
 
-    for (i = 0; i < COMP_EVT_MAX_NUM; i++)
+    for (i = 1; i < COMP_EVT_MAX_NUM; i++)
     {
         // find event
         if (evt_list[i].event_id != 0 && strcmp(evt_list[i].name, name) == 0)
@@ -119,7 +119,7 @@ int32_t HopeEvtSubsribe(const char *name, void (*call)(void *))
     }
 
     // Find an empty slot in the static call list
-    for (i = 0; i < COMP_EVT_MAX_CALL; i++)
+    for (i = 1; i < COMP_EVT_MAX_CALL; i++)
     {
         if (evt_call_list[i].call == NULL)
         {
@@ -140,7 +140,7 @@ pType_hope_evt_t HopeEvtGet(const char *name)
 {
     int i;
     i = 0;
-    for(i = 0; i < COMP_EVT_MAX_NUM; i++)
+    for(i = 1; i < COMP_EVT_MAX_NUM; i++)
     {
         if(evt_list[i].event_id != 0 && strcmp(evt_list[i].name, name) == 0)
         {
@@ -175,10 +175,11 @@ int32_t HopeEvtTirgger(const char *name, void *var)
 {
     pType_hope_evt_t p = NULL;
     int i;
-    for (i = 0; i < COMP_EVT_MAX_NUM; i++)
+    for (i = 1; i < COMP_EVT_MAX_NUM; i++)
     {
         if (evt_list[i].event_id != 0 && strcmp(evt_list[i].name, name) == 0) // find evt
         {
+            COMP_LOG_FW("HopeEvtTirgger evt : %s", name);
             p = &evt_list[i];
             break;
         }

@@ -34,9 +34,9 @@ typedef struct Type_Comp_FW
 #endif
 
 #if CUST_COMP_CMD
-    int (*HopeCMDSendName)(const char *name);
-    int (*HopeCMDSendIdx)(int32_t idx);
-    int (*HopeCMDSendFast)(int32_t idx);
+    int (*HopeCMDSendName)(const char *name, void *p);
+    int (*HopeCMDSendIdx)(int32_t idx, void *p);
+    int (*HopeCMDSendFast)(int32_t idx, void *p);
     int (*HopeCMDRigster)(pType_hope_cmd_t pcmd);
     pType_hope_cmd_t (*HopeCMDGet)(const char *name);
 #endif

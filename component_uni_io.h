@@ -97,6 +97,10 @@ extern "C"
 	// 驱动获取函数
 	pType_COMP_uni_io_t UniIO_Drv_Get(int id);
 	pType_COMP_uni_io_t UniIO_Drv_GetByName(const char *name);
+	
+	// 驱动读写函数
+	int UniIO_Drv_O_R_C(const char *drv_name, const char *file_name, uint32_t addr, uint8_t *dat, uint32_t len, uint32_t timeout);
+	int UniIO_Drv_O_W_C(const char *drv_name, const char *file_name, uint32_t addr, uint8_t *dat, uint32_t len, uint32_t timeout)	;
 	// 全局变量
 
 #ifdef __cplusplus

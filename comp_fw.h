@@ -22,6 +22,8 @@ typedef struct Type_Comp_FW
     pType_COMP_uni_io_t (*UniIO_Drv_Get)(int);
     pType_COMP_uni_io_t (*UniIO_Drv_GetByName)(const char *);
     uint32_t (*UniIO_Drv_Register)(pType_COMP_uni_io_t);
+    int32_t (*UniIO_Drv_O_R_C)(const char *drv_name,const char *file_name,uint32_t addr, uint8_t *dat, uint32_t len, uint32_t timeout);
+    int32_t (*UniIO_Drv_O_W_C)(const char *drv_name,const char *file_name,uint32_t addr, uint8_t *dat, uint32_t len, uint32_t timeout);
 #endif
 
 #if CUST_COMP_EVT

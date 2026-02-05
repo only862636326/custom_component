@@ -71,3 +71,5 @@
 - evt 改为name, 不在使用id, 方便阅读
 - evt call, 改为list, 减少空间浪费
 
+2026/02/05 main uni_io
+- 添加 fw OpenWriteClose, OpenReadClose, 函数

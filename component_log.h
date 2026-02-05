@@ -28,7 +28,7 @@
 
 #define get_sys_time()
 
-#define COMP_LOG_LEVEL COMP_LOG_LEVEL_FW
+#define COMP_LOG_LEVEL COMP_LOG_LEVEL_DEBUG
 
 #define COMP_LOG_LEVEL_OFF 0
 #define COMP_LOG_LEVEL_USER 1

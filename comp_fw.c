@@ -9,6 +9,8 @@ Type_Comp_FW TOP_FW = {
     .UniIO_Drv_Get = UniIO_Drv_Get,
     .UniIO_Drv_GetByName = UniIO_Drv_GetByName,
     .UniIO_Drv_Register = UniIO_Drv_Register,
+    .UniIO_Drv_O_R_C = UniIO_Drv_O_R_C,
+    .UniIO_Drv_O_W_C = UniIO_Drv_O_W_C,
 #endif
 
 #if CUST_COMP_EVT

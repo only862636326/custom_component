@@ -73,3 +73,6 @@
 
 2026/02/05 main uni_io
 - 添加 fw OpenWriteClose, OpenReadClose, 函数
+
+2026/03/20 main fsm
+- 初始化时, fsm子节点参数不为空时，不使用prt参数

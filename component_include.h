@@ -11,7 +11,7 @@
 #include "comp_fw.h"
 #include "component_config.h"
 
-// for user, 公共定义, 可以不用
+// for user
 #include "comp_public_define.h"
 
 

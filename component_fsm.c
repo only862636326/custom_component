@@ -257,7 +257,10 @@ void HopeFsm_Init(pType_hope_fsm_t p)
     {
         if (p->sta_list[i] != NULL)
         {
-            p->sta_list[i]->p = p->p;
+            if (p->sta_list[i]->p == NULL)
+            {
+                p->sta_list[i]->p = p->p;
+            }
             HopeFsm_Init(p->sta_list[i]);
         }
     }

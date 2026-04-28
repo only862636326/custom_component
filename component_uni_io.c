@@ -59,6 +59,7 @@ uint32_t UniIO_Drv_Register(pType_COMP_uni_io_t p_drv)
             return IO_ERR_NONE;
         }
     }
+    COMP_LOG_FW("uni io drv name %s register failed, no space", p_drv->name);
     return IO_ERR_INVALID_ID;
 }
 
